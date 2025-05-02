@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Head from 'next/head'
 import Link from 'next/link'
 import clsx from 'clsx'
-import { ArrowRight, Zap, CheckCircle, Star, ArrowUpRight, Sparkles } from 'lucide-react'
+import { ArrowRight, Zap, CheckCircle, Star, ArrowUpRight, Sparkles, Code, Dumbbell, GraduationCap, Lightbulb, Mail } from 'lucide-react'
 
 import { Button } from '@/components/Button'
 import { Card } from '@/components/Card'
@@ -299,88 +299,170 @@ export default function Home({ articles }) {
           content="Hi, I'm Suleyman Kiani, a fitness and martial arts instructor, web developer, and enthusiast of chess and basketball."
         />
       </Head>
+      {/* Hero Section */}
       <Container className="mt-9">
         <div className="max-w-2xl">
-          <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
-            Welcome to My World – Cloud, Code, and Combat 💻🥋💪
-          </h1>
-          <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            I’m Suleyman Kiani—also known as <strong>Suley</strong>. This site is more than just a portfolio; 
-            it’s a place where <strong>technology, problem-solving, and fitness collide</strong>.
-          </p>
-          <p className="mt-4 text-base text-zinc-600 dark:text-zinc-400">
-            As a <strong>cloud solutions enthusiast, full-stack developer, problem solver, and personal trainer</strong>, 
-            I built this platform using <strong>Next.js 14</strong> and deployed it with <strong>Vercel</strong>, integrating <strong>AWS cloud services</strong>—one of the many solutions I specialize in at <strong>E&S Solutions</strong>.
-          </p>
-          <p className="mt-4 text-base text-zinc-600 dark:text-zinc-400">
-            I created this space to <strong>document my journey, share insights, and connect with like-minded individuals</strong>. 
-            Whether it’s <strong>breaking down complex cloud architectures, solving algorithmic challenges (500+ LeetCode problems and counting! 😆), 
-            or coaching clients through fitness transformations</strong>, I love <strong>applying knowledge to real-world challenges</strong>.
-          </p>
-
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-800">
-              <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">🚀 Tech & Cloud Insights</h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Articles on <strong>cloud architecture, DevOps, full-stack development, and automation</strong>.
-              </p>
+          <div className="space-y-2 mb-6">
+            <div className="inline-block rounded-full bg-zinc-100 px-3 py-1 text-sm text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200">
+              Cloud • Code • Combat
             </div>
-
-            <div className="p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-800">
-              <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">🥋 Fitness & Martial Arts</h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                My experiences as a <strong>personal trainer & martial arts instructor</strong> in 
-                <strong> Kickboxing & Wado Ryu Karate</strong>.
-              </p>
-            </div>
-
-            <div className="p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-800">
-              <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">🧠 Problem-Solving & Growth</h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                My thoughts on <strong>learning, teaching, and overcoming challenges</strong>—both in tech and fitness.
-              </p>
-            </div>
-
-            <div className="p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-800">
-              <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">📖 Honest Experiences</h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                The <strong>wins, struggles, and lessons learned along the way</strong>, because growth isn’t always linear.
-              </p>
-            </div>
-
-            <div className="p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-800 sm:col-span-2">
-              <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">💼 Projects & Resume</h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                A showcase of <strong>my past work, technical projects, and professional experience</strong>—all in one place.
-              </p>
+            <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
+              Craft, iterate, repeat.
+            </h1>
+          </div>
+          
+          <div className="space-y-6 text-base text-zinc-600 dark:text-zinc-400">
+            <p>
+              I&apos;m Suleyman Kiani—Suley if we train together.
+            </p>
+            <p>
+              By day I architect cloud systems, write full‑stack code, and guide CS students through algorithms at SKompXcel. 
+              After hours you&apos;ll find me on the mats coaching kickboxing, drilling rapid‑chess lines (1650 ELO peak), 
+              or chasing rebounds with a 38‑inch vertical.
+            </p>
+            <p>
+              My projects aim for simple outcomes: shave seconds off deployments, help someone land a job, 
+              or just make a user smile. Recent work includes Applify AI, an ATS‑savvy resume platform built 
+              with Next.js 15 & GPT‑4o, and a fitness‑tracking toolkit grown from my own coaching logs.
+            </p>
+          </div>
+          
+          {/* Focus Areas */}
+          <div className="mt-10">
+            <h2 className="text-xl font-semibold text-zinc-800 dark:text-zinc-100 mb-6">Focus Areas</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Tech & Cloud */}
+              <div className="p-5 rounded-xl bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-800/50 dark:to-zinc-900 border border-zinc-200 dark:border-zinc-700 hover:border-teal-500/40 dark:hover:border-teal-500/40 transition">
+                <div className="flex items-center mb-2">
+                  <Code className="h-5 w-5 text-teal-600 dark:text-teal-400 mr-2" />
+                  <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">Tech & Cloud</h3>
+                </div>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  Serverless AWS / GCP · DevOps automation · TypeScript / Next.js
+                </p>
+              </div>
+              
+              {/* Fitness & Martial Arts */}
+              <div className="p-5 rounded-xl bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-800/50 dark:to-zinc-900 border border-zinc-200 dark:border-zinc-700 hover:border-teal-500/40 dark:hover:border-teal-500/40 transition">
+                <div className="flex items-center mb-2">
+                  <Dumbbell className="h-5 w-5 text-teal-600 dark:text-teal-400 mr-2" />
+                  <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">Fitness & Martial Arts</h3>
+                </div>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  Kickboxing · Wado Ryu Karate · strength programming
+                </p>
+              </div>
+              
+              {/* Learning & Mentorship */}
+              <div className="p-5 rounded-xl bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-800/50 dark:to-zinc-900 border border-zinc-200 dark:border-zinc-700 hover:border-teal-500/40 dark:hover:border-teal-500/40 transition">
+                <div className="flex items-center mb-2">
+                  <GraduationCap className="h-5 w-5 text-teal-600 dark:text-teal-400 mr-2" />
+                  <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">Learning & Mentorship</h3>
+                </div>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  Tutoring · algorithm walkthroughs · study systems
+                </p>
+              </div>
+              
+              {/* Projects & Experiments */}
+              <div className="p-5 rounded-xl bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-800/50 dark:to-zinc-900 border border-zinc-200 dark:border-zinc-700 hover:border-teal-500/40 dark:hover:border-teal-500/40 transition">
+                <div className="flex items-center mb-2">
+                  <Lightbulb className="h-5 w-5 text-teal-600 dark:text-teal-400 mr-2" />
+                  <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">Projects & Experiments</h3>
+                </div>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  Open‑source tools · data scrapers · AI side quests
+                </p>
+              </div>
             </div>
           </div>
-
-          <p className="mt-8 text-base text-zinc-600 dark:text-zinc-400">
-            <strong>Want to Connect?</strong> If you’re interested in <strong>collaborating, discussing cloud solutions, solving complex problems, 
-            or even just chatting about fitness</strong>, feel free to explore and reach out!
-          </p>
-
-          <div className="mt-6 flex gap-6">
-            <SocialLink
-              href="https://www.instagram.com/svley/"
-              aria-label="Follow on Instagram"
-              icon={InstagramIcon}
-            />
-            <SocialLink
-              href="https://github.com/kianis4"
-              aria-label="Follow on GitHub"
-              icon={GitHubIcon}
-            />
-            <SocialLink
-              href="https://www.linkedin.com/in/suleyman-kiani"
-              aria-label="Follow on LinkedIn"
-              icon={LinkedInIcon}
-            />
+          
+          {/* Reach Out */}
+          <div className="mt-10">
+            <p className="text-base text-zinc-600 dark:text-zinc-400">
+              <strong>Reach Out</strong> – If you&apos;re exploring scalable architectures, sharpening problem‑solving skills, 
+              or simply enjoy a good endgame study, my inbox is open.
+            </p>
+            
+            {/* Social Links */}
+            <div className="mt-6 flex gap-6">
+              <SocialLink
+                href="https://www.instagram.com/svley/"
+                aria-label="Follow on Instagram"
+                icon={InstagramIcon}
+              />
+              <SocialLink
+                href="https://github.com/kianis4"
+                aria-label="Follow on GitHub"
+                icon={GitHubIcon}
+              />
+              <SocialLink
+                href="https://www.linkedin.com/in/suleyman-kiani"
+                aria-label="Follow on LinkedIn"
+                icon={LinkedInIcon}
+              />
+              <SocialLink
+                href="mailto:suley.kiani@outlook.com" 
+                aria-label="Email me"
+                icon={({ ...props }) => (
+                  <Mail {...props} className="h-6 w-6 fill-zinc-500 transition group-hover:fill-zinc-600 dark:fill-zinc-400 dark:group-hover:fill-zinc-300" />
+                )}
+              />
+            </div>
           </div>
         </div>
       </Container>
-      
+            {/* Site Description */}
+            <Container className="mt-20">
+        <div className="max-w-2xl">
+          <div className="mb-8">
+            <h2 className="inline-block text-xl font-bold text-zinc-800 dark:text-zinc-100">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-sky-500">
+                suleyman.io
+              </span>
+            </h2>
+            <p className="text-lg font-medium text-zinc-700 dark:text-zinc-300">
+              Building systems, sharing the craft.
+            </p>
+          </div>
+          
+          <div className="space-y-6 text-base text-zinc-600 dark:text-zinc-400">
+            <p>
+              This site is my working logbook—code, experiments, and lessons drawn from projects 
+              like Applify AI, SKompXcel, and a stack of open‑source tools. Inside you&apos;ll find:
+            </p>
+            
+            <div className="space-y-4 pl-4 border-l-2 border-zinc-200 dark:border-zinc-700">
+              <div>
+                <h3 className="font-semibold text-zinc-800 dark:text-zinc-100">Projects</h3>
+                <p className="text-sm">live demos, architecture notes, and post‑mortems</p>
+              </div>
+              
+              <div>
+                <h3 className="font-semibold text-zinc-800 dark:text-zinc-100">Articles</h3>
+                <p className="text-sm">bite‑sized write‑ups on cloud patterns, DevOps automation, and problem‑solving heuristics</p>
+              </div>
+              
+              <div>
+                <h3 className="font-semibold text-zinc-800 dark:text-zinc-100">Resume & Uses</h3>
+                <p className="text-sm">skills, stack, and the gear that keeps the wheels turning</p>
+              </div>
+              
+              <div>
+                <h3 className="font-semibold text-zinc-800 dark:text-zinc-100">Dashboards</h3>
+                <p className="text-sm">LeetCode progress, Spotify listening habits, and other data‑driven snapshots</p>
+              </div>
+            </div>
+            
+            <p>
+              All of it runs on a Next.js + Tailwind stack, stitched together with API integrations 
+              (Spotify, Instagram, custom scrapers) and tuned for performance. The goal is simple: 
+              make useful things, document the process, and leave the door open for anyone who wants 
+              to learn—or teach—something new.
+            </p>
+          </div>
+        </div>
+      </Container>
       <div className="mt-16">
         <section className="py-10 md:py-16 bg-gradient-to-br from-blue-600 to-blue-800 relative overflow-hidden">
           <div className="absolute inset-0 opacity-10">
