@@ -1,29 +1,91 @@
+import { useState, useEffect } from 'react';
 import { Worker } from '@react-pdf-viewer/core';
 import { Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
+import Head from 'next/head';
+import { SimpleLayout } from '@/components/SimpleLayout';
+import { HiDownload } from 'react-icons/hi'; // Using Hero Icons from React Icons
 
 export default function Resume() {
+  const [pdfUrl, setPdfUrl] = useState('/Suleyman_Kiani_RESUME_2025.pdf'); // Default fallback PDF
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function compileLaTeX() {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/compile-latex', { method: 'POST' });
+        const data = await response.json();
+        
+        if (data.success && data.pdfUrl) {
+          setPdfUrl(data.pdfUrl);
+        } else {
+          console.warn('Failed to compile LaTeX, using fallback PDF', data.error);
+          // Keep using the fallback PDF
+        }
+      } catch (err) {
+        console.error('Error during LaTeX compilation:', err);
+        setError('Failed to compile resume. Using fallback version.');
+        // Keep using the fallback PDF
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    compileLaTeX();
+  }, []);
+
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100vh',
-      width: '100vw',
-      backgroundColor: '#1E1E1E'
-    }}>
-      <div style={{
-        width: '60vw', // Adjust width to keep PDF centered and visible
-        height: '90vh', // Adjust height so it fits well
-        backgroundColor: '#fff',
-        borderRadius: '10px',
-        overflow: 'hidden',
-        boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.5)' // Adds a soft shadow effect
-      }}>
-        <Worker workerUrl={`https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js`}>
-          <Viewer fileUrl="/Suleyman_Kiani_RESUME_2025.pdf" defaultScale={1.1} />
-        </Worker>
-      </div>
-    </div>
+    <>
+      <Head>
+        <title>Suleyman Kiani | Resume</title>
+        <meta name="description" content="Suleyman Kiani's professional resume" />
+      </Head>
+      
+      <SimpleLayout
+        title="My Professional Resume"
+        intro="View or download my resume showcasing my experience as a cloud solutions architect, full-stack developer, and personal trainer."
+      >
+        <div className="mt-6">
+          <a 
+            href={pdfUrl} 
+            download="Suleyman_Kiani_Resume.pdf"
+            className="inline-flex items-center rounded-md bg-zinc-50 px-4 py-2 text-sm font-medium text-zinc-900 ring-1 ring-inset ring-zinc-900/10 hover:bg-zinc-100 mb-8 dark:bg-zinc-800/40 dark:text-zinc-300 dark:ring-zinc-700 dark:hover:bg-zinc-800"
+          >
+            Download Resume
+            <HiDownload className="ml-2 h-4 w-4" />
+          </a>
+          
+          {loading && (
+            <div className="flex justify-center items-center py-8">
+              <div className="animate-pulse text-zinc-600 dark:text-zinc-400">
+                Loading your resume...
+              </div>
+            </div>
+          )}
+          
+          {error && (
+            <div className="flex justify-center items-center py-4">
+              <div className="text-red-500 dark:text-red-400">
+                {error}
+              </div>
+            </div>
+          )}
+          
+          <div className="relative rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 shadow-md bg-white dark:bg-zinc-800/90">
+            <div className="h-[70vh] lg:h-[80vh]">
+              <Worker workerUrl="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js">
+                <Viewer 
+                  fileUrl={pdfUrl} 
+                  defaultScale={1.1}
+                  className="h-full" 
+                />
+              </Worker>
+            </div>
+          </div>
+        </div>
+      </SimpleLayout>
+    </>
   );
 }
