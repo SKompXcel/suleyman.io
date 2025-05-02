@@ -12,7 +12,7 @@ import {
   GitHubIcon,
   LinkedInIcon,
 } from '@/components/SocialIcons'
-const image1 = '/SKompLightMode.svg'
+const image1 = '/SKomp.svg'
 const image5 = '/ApplifyLogo.svg'
 import image2 from '@/images/photos/image-3.jpg'
 import image3 from '@/images/photos/image-5.png'

@@ -33,7 +33,7 @@ const projects = [
     description:
       'Academic Excellence Platform and mentorship service supporting 20+ Computer Science students. Built with Next.js and TypeScript, featuring responsive UI with Tailwind CSS and scalable hosting on Google Cloud.',
     link: { href: 'https://skompxcel.com/', label: 'skompxcel.com' },
-    logo: '/SKompLightMode.svg', // Updated to use public directory path
+    logo: '/SKomp.svg', // Updated to use public directory path
     timeframe: 'Jan 2024 - Present',
     tech: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Google Cloud'],
     featured: true,
