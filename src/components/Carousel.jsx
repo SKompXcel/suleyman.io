@@ -1,4 +1,33 @@
+/**
+ * @component Carousel
+ * @description A responsive Instagram media carousel that fetches and displays Instagram posts
+ * with interactive navigation and visual effects. Features include smooth GSAP transitions, 
+ * 3D card rotation on hover, keyboard navigation, and touch/swipe support.
+ * 
+ * @example
+ * // Basic usage
+ * import Carousel from '@/components/Carousel';
+ * 
+ * const Page = () => {
+ *   return <Carousel />;
+ * };
+ * 
+ * @returns {JSX.Element} A fully interactive Instagram media carousel with loading,
+ * error, and empty states. The component automatically fetches media from the
+ * Instagram API endpoint '/api/instagramMedia'.
+ * 
+ * @features
+ * - Animated card transitions with GSAP
+ * - 3D card rotation effect on mouse hover
+ * - Keyboard navigation (left/right arrows)
+ * - Touch/swipe navigation for mobile devices
+ * - Loading skeleton UI during data fetching
+ * - Error handling with retry functionality
+ * - Image preloading for smoother transitions
+ * - Responsive design for different screen sizes
+ */
 // /src/components/Carousel.jsx
+
 "use client";
 import { Header } from "@/components/Header";
 import React, { useState, useEffect, useCallback } from "react";
