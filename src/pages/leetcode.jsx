@@ -1,5 +1,3 @@
-
-
 /**
  * @component LeetCodeStats
  * @description A React component that displays a user's LeetCode profile and statistics.
@@ -23,7 +21,6 @@
  * }
  */
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import LeetcodeCalendar from '../components/LeetcodeCalendar';
 import avatarImage from '../images/avatar.jpeg';
 import Image from 'next/image';
@@ -37,6 +34,7 @@ export default function LeetCodeStats() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [rendered, setRendered] = useState(false);
 
   useEffect(() => {
     async function fetchStats() {
@@ -47,6 +45,7 @@ export default function LeetCodeStats() {
           throw new Error('Failed to fetch LeetCode stats');
         }
         const data = await response.json();
+        console.log("Data fetched successfully:", data);
         setStats(data);
       } catch (err) {
         console.error('Error fetching LeetCode stats:', err);
@@ -58,23 +57,29 @@ export default function LeetCodeStats() {
     fetchStats();
   }, []);
 
-  // Prepare data for pie chart
+  useEffect(() => {
+    setRendered(true);
+  }, []);
+
   const getPieData = () => {
     if (!stats) return [];
-
     return [
-      { name: 'Easy', value: stats.easySolved, color: '#00B8A3' },
-      { name: 'Medium', value: stats.mediumSolved, color: '#FFC01E' },
-      { name: 'Hard', value: stats.hardSolved, color: '#FF375F' },
+      { name: 'Easy', value: stats.easySolved || 0, color: '#00B8A3' },
+      { name: 'Medium', value: stats.mediumSolved || 0, color: '#FFC01E' },
+      { name: 'Hard', value: stats.hardSolved || 0, color: '#FF375F' },
     ];
   };
 
   const getTotalProgress = () => {
-    if (!stats) return 0;
+    if (!stats || !stats.totalSolved || !stats.totalQuestions) return 0;
     return Math.round((stats.totalSolved / stats.totalQuestions) * 100);
   };
 
-  // Loading skeleton
+  // Check if we're on client-side and have loaded data
+  if (!rendered && typeof window !== 'undefined') {
+    return <div className="container mx-auto p-4 max-w-5xl text-center">Loading...</div>;
+  }
+
   if (loading) {
     return (
       <div className="container mx-auto p-4 max-w-5xl animate-pulse">
@@ -82,7 +87,6 @@ export default function LeetCodeStats() {
           <div className="h-10 bg-gray-300 dark:bg-zinc-700 rounded w-64"></div>
         </div>
         
-        {/* Profile card skeleton */}
         <div className="bg-white dark:bg-zinc-800 shadow-lg rounded-xl p-6 mb-6">
           <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6">
             <div className="w-24 h-24 rounded-full bg-gray-300 dark:bg-zinc-700"></div>
@@ -96,7 +100,6 @@ export default function LeetCodeStats() {
           </div>
         </div>
         
-        {/* Stats grid skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           {[...Array(2)].map((_, i) => (
             <div key={i} className="bg-white dark:bg-zinc-800 shadow-lg rounded-xl p-6">
@@ -113,7 +116,6 @@ export default function LeetCodeStats() {
     );
   }
 
-  // Error state
   if (error) {
     return (
       <div className="container mx-auto p-4 flex justify-center items-center h-96">
@@ -134,39 +136,18 @@ export default function LeetCodeStats() {
     );
   }
 
+  // Once data loads correctly, reintroduce motion with safeguards
   return (
-    <motion.div 
-      initial={{ opacity: 0 }} 
-      animate={{ opacity: 1 }} 
-      transition={{ duration: 0.5 }}
-      className="container mx-auto p-4 max-w-5xl"
-    >
+    <div className="container mx-auto p-4 max-w-5xl">
+      {/* Add animations back one section at a time */}
+      
       {/* Header Section */}
       <div className="relative mb-10 text-center">
-        <motion.div 
-          initial={{ y: -20 }}
-          animate={{ y: 0 }}
-          transition={{ delay: 0.2, type: "spring", stiffness: 120 }}
-        >
-          <div className="inline-flex items-center justify-center mb-2">
-            <SiLeetcode className="text-[#FFA116] text-4xl mr-3" />
-            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-zinc-100">
-              LeetCode Profile
-            </h1>
-          </div>
-          <p className="text-lg text-gray-600 dark:text-zinc-400 max-w-2xl mx-auto">
-            Track my problem-solving journey with detailed statistics and recent submissions
-          </p>
-        </motion.div>
+        {/* Reintroduce animation here if working */}
       </div>
 
       {/* Developer Insight Dialog for Recruiters */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.5 }}
-        className="bg-gradient-to-r from-teal-50 to-blue-50 dark:from-teal-900/30 dark:to-blue-900/30 mb-8 rounded-xl border border-teal-100 dark:border-teal-800/50 overflow-hidden"
-      >
+      <div className="bg-gradient-to-r from-teal-50 to-blue-50 dark:from-teal-900/30 dark:to-blue-900/30 mb-8 rounded-xl border border-teal-100 dark:border-teal-800/50 overflow-hidden">
         <div className="p-5 md:p-6">
           <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
             <div className="flex-shrink-0 p-3 bg-teal-500/10 dark:bg-teal-500/20 rounded-full">
@@ -199,17 +180,11 @@ export default function LeetCodeStats() {
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* User Profile Card */}
-      <motion.div 
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.5, duration: 0.5 }}
-        className="bg-white dark:bg-zinc-800/90 shadow-xl rounded-xl p-6 mb-8 backdrop-blur-sm border border-gray-100 dark:border-zinc-700/50"
-      >
+      <div className="bg-white dark:bg-zinc-800/90 shadow-xl rounded-xl p-6 mb-8 backdrop-blur-sm border border-gray-100 dark:border-zinc-700/50">
         <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-6 sm:space-y-0 sm:space-x-8">
-          {/* Avatar with shine effect */}
           <div className="relative flex-shrink-0">
             <div className="w-28 h-28 rounded-full overflow-hidden ring-4 ring-teal-500/20 dark:ring-teal-400/20 shadow-lg">
               <Image
@@ -227,7 +202,6 @@ export default function LeetCodeStats() {
             </div>
           </div>
           
-          {/* Profile Info */}
           <div className="text-center sm:text-left flex-grow">
             <h2 className="text-3xl font-bold text-gray-800 dark:text-zinc-100">Suleyman</h2>
             <div className="inline-flex items-center text-gray-500 dark:text-zinc-400 text-lg mt-1">
@@ -280,23 +254,16 @@ export default function LeetCodeStats() {
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        {/* Overall Progress */}
-        <motion.div 
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
-          className="bg-white dark:bg-zinc-800/90 shadow-lg rounded-xl p-6 backdrop-blur-sm border border-gray-100 dark:border-zinc-700/50"
-        >
+        <div className="bg-white dark:bg-zinc-800/90 shadow-lg rounded-xl p-6 backdrop-blur-sm border border-gray-100 dark:border-zinc-700/50">
           <h2 className="text-xl font-bold text-gray-800 dark:text-zinc-100 flex items-center mb-4">
             <BiCodeAlt className="mr-2 text-teal-500 dark:text-teal-400" />
             Overall Progress
           </h2>
           
-          {/* Progress circle */}
           <div className="flex items-center justify-center">
             <div className="relative flex items-center justify-center">
               <svg className="w-40 h-40">
@@ -345,15 +312,9 @@ export default function LeetCodeStats() {
               problems solved
             </p>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Problems by Difficulty */}
-        <motion.div 
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
-          className="bg-white dark:bg-zinc-800/90 shadow-lg rounded-xl p-6 backdrop-blur-sm border border-gray-100 dark:border-zinc-700/50"
-        >
+        <div className="bg-white dark:bg-zinc-800/90 shadow-lg rounded-xl p-6 backdrop-blur-sm border border-gray-100 dark:border-zinc-700/50">
           <h2 className="text-xl font-bold text-gray-800 dark:text-zinc-100 flex items-center mb-4">
             <FaCode className="mr-2 text-teal-500 dark:text-teal-400" />
             By Difficulty
@@ -422,15 +383,9 @@ export default function LeetCodeStats() {
               <span className="text-sm text-gray-600 dark:text-zinc-300">Hard: {stats.hardSolved}/{stats.totalHard}</span>
             </div>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Profile Details */}
-        <motion.div 
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.6, duration: 0.5 }}
-          className="bg-white dark:bg-zinc-800/90 shadow-lg rounded-xl p-6 backdrop-blur-sm border border-gray-100 dark:border-zinc-700/50"
-        >
+        <div className="bg-white dark:bg-zinc-800/90 shadow-lg rounded-xl p-6 backdrop-blur-sm border border-gray-100 dark:border-zinc-700/50">
           <h2 className="text-xl font-bold text-gray-800 dark:text-zinc-100 mb-4 flex items-center">
             <SiLeetcode className="mr-2 text-teal-500 dark:text-teal-400" />
             Profile Stats
@@ -456,16 +411,11 @@ export default function LeetCodeStats() {
               </span>
             </li>
           </ul>
-        </motion.div>
+        </div>
       </div>
 
       {/* Activity Calendar */}
-      <motion.div 
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.7, duration: 0.5 }}
-        className="bg-white dark:bg-zinc-800/90 shadow-lg rounded-xl p-6 mb-8 backdrop-blur-sm border border-gray-100 dark:border-zinc-700/50"
-      >
+      <div className="bg-white dark:bg-zinc-800/90 shadow-lg rounded-xl p-6 mb-8 backdrop-blur-sm border border-gray-100 dark:border-zinc-700/50">
         <h2 className="text-xl font-bold text-gray-800 dark:text-zinc-100 mb-4 flex items-center">
           <svg className="w-5 h-5 mr-2 text-teal-500 dark:text-teal-400" fill="currentColor" viewBox="0 0 24 24">
             <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-2 .9-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM7 11h5v5H7z"></path>
@@ -476,15 +426,10 @@ export default function LeetCodeStats() {
         <div className="overflow-hidden rounded-lg">
           <LeetcodeCalendar />
         </div>
-      </motion.div>
+      </div>
 
       {/* Recent Submissions */}
-      <motion.div 
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.8, duration: 0.5 }}
-        className="bg-white dark:bg-zinc-800/90 shadow-lg rounded-xl p-6 backdrop-blur-sm border border-gray-100 dark:border-zinc-700/50"
-      >
+      <div className="bg-white dark:bg-zinc-800/90 shadow-lg rounded-xl p-6 backdrop-blur-sm border border-gray-100 dark:border-zinc-700/50">
         <h2 className="text-xl font-bold text-gray-800 dark:text-zinc-100 mb-4 flex items-center">
           <svg className="w-5 h-5 mr-2 text-teal-500 dark:text-teal-400" fill="currentColor" viewBox="0 0 24 24">
             <path d="M13 3a9 9 0 00-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0013 21a9 9 0 000-18z"></path>
@@ -498,11 +443,8 @@ export default function LeetCodeStats() {
             const isAccepted = submission.statusDisplay.toLowerCase().includes('accepted');
             
             return (
-              <motion.div 
+              <div 
                 key={index}
-                initial={{ x: -20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.8 + index * 0.1, duration: 0.3 }}
                 className={`p-4 rounded-lg border ${
                   isAccepted 
                     ? 'bg-green-50 dark:bg-green-900/10 border-green-100 dark:border-green-900/30' 
@@ -530,11 +472,11 @@ export default function LeetCodeStats() {
                     {submission.statusDisplay}
                   </span>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </div>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 }

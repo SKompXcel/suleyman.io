@@ -1,5 +1,6 @@
 // src/pages/api/leetcode.js
 export default async function handler(req, res) {
+  console.log("API route /api/leetcode called");
   const username = req.query.username || 'kianis4';
   const apiUrl = `https://leetcode-api-faisalshohag.vercel.app/${username}`;
 
