@@ -33,6 +33,7 @@
     "puppeteer": "^24.2.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-icons": "^5.5.0",
     "react-pdf": "^5.7.2",
     "remark-gfm": "^3.0.1",
     "sharp": "^0.33.5",

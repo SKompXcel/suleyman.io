@@ -3,6 +3,8 @@
 import { useEffect, useRef } from 'react'
 import Head from 'next/head'
 import { Analytics } from '@vercel/analytics/react'
+import Image from 'next/image'
+import Link from 'next/link'
 
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
@@ -86,6 +88,28 @@ export default function App({ Component, pageProps, router }) {
         {/* Conditionally Render Footer */}
         {!isInstaPage && <Footer />}
       </div>
+      
+      {/* Applify AI Banner */}
+      <div className="fixed bottom-4 right-4 z-50">
+        <Link 
+          href="/projects" 
+          className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-indigo-500 to-blue-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group"
+        >
+          <div className="w-6 h-6 rounded-full overflow-hidden flex-shrink-0">
+            <Image 
+              src="/ApplifyLogo.svg" 
+              alt="Applify AI Logo" 
+              width={24} 
+              height={24}
+              className="object-cover"
+            />
+          </div>
+          <span className="text-xs font-medium pr-1">
+            Built using Applify AI — <span className="underline group-hover:no-underline">My Latest Project</span>
+          </span>
+        </Link>
+      </div>
+      
       <Analytics />
     </>
   )
