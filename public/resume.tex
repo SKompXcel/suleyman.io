@@ -1,0 +1,193 @@
+%-------------------------
+% Resume in Latex
+% Author : Suleyman Kiani
+% Based off of: https://github.com/sb2nov/resume
+% License : MIT
+%------------------------
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\input{glyphtounicode}
+
+
+%----------FONT OPTIONS----------
+% sans-serif
+% \usepackage[sfdefault]{FiraSans}
+% \usepackage[sfdefault]{roboto}
+% \usepackage[sfdefault]{noto-sans}
+% \usepackage[default]{sourcesanspro}
+
+% serif
+% \usepackage{CormorantGaramond}
+% \usepackage{charter}
+
+
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.0in}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+% Ensure that generate pdf is machine readable/ATS parsable
+\pdfgentounicode=1
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubSubheading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \textit{\small#1} & \textit{\small #2} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+%-------------------------------------------
+%%%%%%  RESUME STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+%-----------Header-----------
+%-----------Header-----------
+\begin{center}
+    \textbf{\Huge \scshape Suleyman Kiani} \\ \vspace{1pt}
+    \small +1 (289) 788-8260 $|$ \href{mailto:suley.kiani@outlook.com}{\underline{suley.kiani@outlook.com}} $|$ \href{https://www.linkedin.com/in/suleyman-kiani/}{\underline{linkedin.com/in/suleyman-kiani}} $|$ \href{https://github.com/kianis4}{\underline{github.com/kianis4}} $|$ \href{https://www.suleyman.io/}{\underline{www.suleyman.io}}
+\end{center}
+
+
+%-----------EDUCATION-----------
+%-----------EDUCATION-----------
+\section{Education}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {McMaster University}{Remote}
+      {Bachelor of Applied Science (BASc) in Computer Science}{Sept. 2018 - Nov. 2024}
+  \resumeSubHeadingListEnd
+
+
+%-----------EXPERIENCE-----------
+%-----------EXPERIENCE-----------
+\section{Experience}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {Junior Web Developer}{May 2021 - Jul. 2022}
+      {GiftCash Inc.}{Remote}
+      \resumeItemListStart
+        \resumeItem{Migrated a legacy \textbf{Python}/\textbf{Django} monolith to a \textbf{Node.js} serverless microservices architecture, boosting scalability by \textbf{15\%}, reducing infrastructure overhead, and enabling cost-effective scaling.}
+        \resumeItem{Optimized \textbf{PostgreSQL} performance through strategic indexing, caching, and query enhancements, leading to a \textbf{20\% reduction} in response time and improved database efficiency.}
+        \resumeItem{Automated data extraction workflows using \textbf{Puppeteer} and \textbf{Axios} in \textbf{Agile}, enhancing gift card balance verification processes and increasing operational efficiency by \textbf{25\%}.}
+        \resumeItem{Established \textbf{Jenkins} and \textbf{GitHub Actions} \textbf{CI/CD} pipelines, facilitating rapid development cycles and seamless deployments, significantly improving release frequency and reliability.}
+      \resumeItemListEnd
+  \resumeSubHeadingListEnd
+
+
+%-----------PROJECTS-----------
+%-----------PROJECTS-----------
+\section{Projects}
+    \resumeSubHeadingListStart
+
+      \resumeProjectHeading
+          {\href{https://www.applify-ai.com/}{\textbf{Applify AI - AI-Powered Resume Tailoring}} $|$ \emph{TypeScript, Next.js, MongoDB}}{Feb. 2025 - Present}
+          \resumeItemListStart
+            \resumeItem{Developed and deployed an AI-Powered Resume Tailoring Platform using \textbf{NextAuth.js}, \textbf{MongoDB}, \textbf{OpenAI's GPT-4}, and \textbf{LaTeX}, enhancing job application effectiveness and resume relevance. Implemented secure authentication, profile management, and subscription-based revenue generation with \textbf{Stripe}.}
+            \resumeItem{Implemented \textbf{JWT}-based session management, role-based access controls, and automated bullet point generation that improved resume formatting and keyword analysis, supporting multiple resume versions and professional PDF outputs.}
+          \resumeItemListEnd
+
+      \resumeProjectHeading
+          {\href{https://www.skompxcel.com/}{\textbf{SKompXcel - Academic Excellence Platform}} $|$ \emph{Next.js, TypeScript, Tailwind CSS}}{Jan. 2024 - Present}
+          \resumeItemListStart
+            \resumeItem{Founded a mentorship platform using \textbf{Next.js} and \textbf{TypeScript}, supporting 20+ students in Computer Science, hosted on \textbf{Google Cloud} for scalable and reliable performance.}
+            \resumeItem{Architected a responsive UI with \textbf{Tailwind CSS}, enhancing user experience and accessibility, resulting in a \textbf{30\% increase} in student engagement and interaction metrics.}
+            \resumeItem{Implemented scalable hosting on \textbf{\textbf{Google Cloud} Compute Engine} and \textbf{Cloud Storage}, ensuring \textbf{99.9\% uptime} and seamless access for students and mentors worldwide.}
+          \resumeItemListEnd
+
+      \resumeProjectHeading
+          {\href{https://github.com/kianis4/Saftey-Net}{\textbf{Crime Analysis and Navigation System}} $|$ \emph{Java SE 10, OpenCSV, Google Gson}}{Mar. 2023 - Apr. 2025}
+          \resumeItemListStart
+            \resumeItem{Developed a \textbf{Java SE 10} desktop application analyzing over four million NYC crime records, integrating advanced spatial analysis, statistical computation, and Dijkstra’s algorithm to provide robust visualizations, frequency rankings, and safest navigation routes for tourists and real estate investors.}
+            \resumeItem{Enhanced data processing and accuracy using \textbf{OpenCSV} and \textbf{Google Gson} for large dataset handling, along with \textbf{LocationIQ’s geocoding API} for precise, location-specific crime information and safety filtering.}
+          \resumeItemListEnd
+
+      \resumeProjectHeading
+          {\href{https://github.com/kianis4/-neural-networks-zero-to-hero.}{\textbf{Neural Network Learning Framework}} $|$ \emph{Python, Jupyter Notebook, Micrograd}}{Jan. 2025}
+          \resumeItemListStart
+            \resumeItem{Developed a neural network learning framework using \textbf{Python} and \textbf{Jupyter Notebook} to demystify the principles of neural network training and backpropagation.}
+            \resumeItem{Implemented core components such as 'Value', 'Neuron', 'Layer', and 'MLP' classes, enabling automatic differentiation and gradient computation within a modular architecture.}
+            \resumeItem{Recreated the \textbf{Micrograd} library's functionality to provide an intuitive understanding of neural networks, showcasing how small networks can perform complex tasks through iterative gradient descent.}
+            \resumeItem{Enhanced learning by detailing the process of optimizing neural networks with cross-entropy loss, similar to models like GPT, demonstrating emerging properties in large-scale data training.}
+          \resumeItemListEnd
+    \resumeSubHeadingListEnd
+
+
+%-----------PROGRAMMING SKILLS-----------
+\section{Technical Skills}
+\begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Programming languages}{: JavaScript, TypeScript, Dart, Java, Python, Swift} \\
+     \textbf{Frameworks}{: Next.js, React, Tailwind CSS, Django, Chakra UI, SASS, Flutter, Node.js, Express.js, BLoC, SwiftUI} \\
+     \textbf{Tools \& Cloud Services}{: Firebase, Vercel, MongoDB, PostgreSQL, GitHub Actions, JUnit, Docker}
+    }}
+\end{itemize}
+
+
+
+%-------------------------------------------
+\end{document}
