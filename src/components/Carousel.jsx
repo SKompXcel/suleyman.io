@@ -43,6 +43,7 @@ const Carousel = () => {
   const [error, setError] = useState(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [cardRefs, setCardRefs] = useState({});
+  const [showBrowserBanner, setShowBrowserBanner] = useState(true);
 
   // Fetch Instagram media when the component mounts
   useEffect(() => {
@@ -113,7 +114,14 @@ const Carousel = () => {
       });
       setCardRefs(refs);
     }
-  }, [media.length]);
+  }, [media]);
+
+  useEffect(() => {
+    const bannerDismissed = localStorage.getItem('carousel-banner-dismissed');
+    if (bannerDismissed) {
+      setShowBrowserBanner(false);
+    }
+  }, []);
 
   const nextIndex = (currentCard + 1) % media.length;
   const prevIndex = (currentCard - 1 + media.length) % media.length;
@@ -225,6 +233,11 @@ const Carousel = () => {
     });
   };
 
+  const dismissBanner = () => {
+    localStorage.setItem('carousel-banner-dismissed', 'true');
+    setShowBrowserBanner(false);
+  };
+
   const tryAgain = async () => {
     setError(null);
     const fetchInstagramMedia = async () => {
@@ -330,6 +343,29 @@ const Carousel = () => {
   return (
     <div className="relative h-screen w-full overflow-hidden bg-black" {...swipeHandlers}>
       <Header />
+
+      {/* Browser Compatibility Banner */}
+      {showBrowserBanner && (
+        <div className="absolute top-16 left-0 right-0 z-50 flex justify-between items-center px-4 py-2 bg-amber-600/90 text-white backdrop-blur-sm">
+          <div className="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+            <span className="text-sm font-medium">
+              This carousel works best in Chrome. Safari may display animations incorrectly.
+            </span>
+          </div>
+          <button 
+            onClick={dismissBanner} 
+            className="ml-4 p-1 hover:bg-amber-700/50 rounded-full transition-colors"
+            aria-label="Dismiss browser compatibility notice"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      )}
 
       {/* API Description */}
       <div className="absolute top-16 left-1/2 transform -translate-x-1/2 z-20 text-center p-4 bg-black/50 backdrop-blur-md rounded-lg max-w-[90%] md:max-w-[70%] mt-10">
