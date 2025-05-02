@@ -92,38 +92,37 @@ const SpotifyPage = () => {
       ) : isLoading ? (
         <LoadingSkeleton />
       ) : (
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full"
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
           {items.map((item, index) => (
-            <motion.div
+            <div
               key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
               className="item-card flex flex-col bg-white shadow-lg rounded-lg overflow-hidden dark:bg-zinc-800 hover:shadow-xl transition-shadow duration-300"
+              style={{ minHeight: '300px' }} // Force minimum height
             >
               {/* Image container with fixed aspect ratio */}
-              <div className="relative w-full pt-[100%]">
-                <Image
-                  src={item.coverImage}
-                  alt={item.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="object-cover absolute top-0 left-0"
-                  priority={index < 4}
-                />
+              <div className="relative w-full pt-[100%] bg-gray-200 dark:bg-zinc-700"> {/* Add background color */}
+                {item.coverImage && (
+                  <Image
+                    src={item.coverImage}
+                    alt={item.title || 'Spotify item'}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover absolute top-0 left-0"
+                    priority={index < 4}
+                    onError={(e) => {
+                      // Fallback for image loading errors
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                )}
               </div>
               
-              <div className="p-4">
+              <div className="p-4 flex-1"> {/* Add flex-1 to make it expand */}
                 <p className="text-xs font-medium text-green-600 dark:text-green-400 mb-1">
                   #{index + 1}
                 </p>
                 <h2 className="text-lg font-semibold text-gray-800 truncate dark:text-zinc-100">
-                  {item.title}
+                  {item.title || 'Unknown Item'}
                 </h2>
                 {item.artist && (
                   <p className="text-sm text-gray-600 dark:text-zinc-400 mt-1">
@@ -131,9 +130,9 @@ const SpotifyPage = () => {
                   </p>
                 )}
               </div>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       )}
     </div>
   );
