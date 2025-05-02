@@ -111,7 +111,7 @@ export default function About() {
             
             <div className="prose dark:prose-invert">
               <p className="text-lg text-zinc-600 dark:text-zinc-400 mb-8">
-                Hey — I'm <strong>Suleyman "Suley" Kiani</strong>: software engineer, cloud architect, 
+                Hey — I&apos;m <strong>Suleyman &apos;Suley&apos; Kiani</strong>: software engineer, cloud architect, 
                 martial‑arts instructor, and perennial student of whatever looks interesting.
               </p>
             </div>
@@ -147,15 +147,15 @@ export default function About() {
               <section>
                 <SectionHeading icon={Basketball}>Off the clock</SectionHeading>
                 <p className="text-zinc-600 dark:text-zinc-400">
-                  Rapid chess keeps my brain sharp (1650 ELO peak), basketball keeps my legs springy (38″ vertical), 
-                  and tutoring keeps me grounded—there's nothing like watching a concept finally click for someone.
+                  Rapid chess keeps my brain sharp (1650 ELO peak), basketball keeps my legs springy (38&rdquo; vertical), 
+                  and tutoring keeps me grounded—there&apos;s nothing like watching a concept finally click for someone.
                 </p>
               </section>
               
               <section>
                 <SectionHeading icon={Heart}>Guiding ideas</SectionHeading>
                 <p className="text-zinc-600 dark:text-zinc-400">
-                  Empathy first, iterate fast, share what you learn. Whether I'm refactoring a codebase 
+                  Empathy first, iterate fast, share what you learn. Whether I&aposm refactoring a codebase 
                   or walking a student through dynamic programming, the goal is the same: make the next 
                   step easier for the person beside me.
                 </p>
@@ -177,7 +177,7 @@ export default function About() {
               
               <section>
                 <p className="text-zinc-600 dark:text-zinc-400 italic border-l-4 border-zinc-200 dark:border-zinc-700 pl-4 py-1">
-                  If you're curious about the projects above—or have one that could use a hand—feel free to reach out.
+                  If you&apos;re curious about the projects above—or have one that could use a hand—feel free to reach out.
                 </p>
               </section>
             </div>
