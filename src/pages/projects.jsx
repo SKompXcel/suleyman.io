@@ -3,6 +3,7 @@ import Head from 'next/head'
 import { Card } from '@/components/Card'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 
 // Import icons from react-icons
 import { 
@@ -533,6 +534,27 @@ export default function Projects() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
         </svg>
       </button>
+
+            {/* Applify AI Banner */}
+            <div className="fixed bottom-4 right-4 z-50">
+        <Link 
+          href="/projects" 
+          className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-indigo-500 to-blue-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group"
+        >
+          <div className="w-6 h-6 rounded-full overflow-hidden flex-shrink-0">
+            <Image 
+              src="/ApplifyLogo.svg" 
+              alt="Applify AI Logo" 
+              width={24} 
+              height={24}
+              className="object-cover"
+            />
+          </div>
+          <span className="text-xs font-medium pr-1">
+            Built using Applify AI — <span className="underline group-hover:no-underline">My Latest Project</span>
+          </span>
+        </Link>
+      </div>
     </>
   )
 }
