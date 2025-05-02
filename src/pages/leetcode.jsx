@@ -1,3 +1,27 @@
+
+
+/**
+ * @component LeetCodeStats
+ * @description A React component that displays a user's LeetCode profile and statistics.
+ * The component fetches data from a LeetCode API and presents it in a visually appealing dashboard format.
+ * It includes the user's profile information, problem-solving statistics, activity calendar, and recent submissions.
+ * 
+ * @returns {JSX.Element} A responsive dashboard displaying LeetCode statistics with:
+ *  - Loading skeleton while data is being fetched
+ *  - Error handling UI if API request fails
+ *  - Profile card with user info and social links
+ *  - Overall problem-solving progress as a circular progress indicator
+ *  - Problem difficulty breakdown as a pie chart
+ *  - Profile statistics (ranking, contributions, etc.)
+ *  - Activity calendar showing submission history
+ *  - Recent submissions list with status indicators
+ * 
+ * @example
+ * // Usage in a Next.js page
+ * export default function LeetCodePage() {
+ *   return <LeetCodeStats />;
+ * }
+ */
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import LeetcodeCalendar from '../components/LeetcodeCalendar';
