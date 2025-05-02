@@ -5,6 +5,16 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Popover, Transition } from '@headlessui/react'
 import clsx from 'clsx'
+import { 
+  FaUser, 
+  FaFileAlt, 
+  FaBriefcase, 
+  FaLaptopCode, 
+  FaTools, 
+  FaSpotify, 
+  FaInstagram 
+} from 'react-icons/fa';
+import { SiLeetcode } from 'react-icons/si';
 
 import { Container } from '@/components/Container'
 import avatarImage from '@/images/avatar.jpeg'
@@ -71,11 +81,12 @@ function MoonIcon(props) {
   )
 }
 
-function MobileNavItem({ href, children }) {
+function MobileNavItem({ href, children, icon: Icon }) {
   return (
     <li>
-      <Popover.Button as={Link} href={href} className="block py-2">
-        {children}
+      <Popover.Button as={Link} href={href} className="flex items-center py-2">
+        {Icon && <Icon className="mr-2 h-5 w-5 flex-shrink-0" />}
+        <span>{children}</span>
       </Popover.Button>
     </li>
   )
@@ -123,15 +134,14 @@ function MobileNavigation(props) {
             </div>
             <nav className="mt-6">
               <ul className="-my-2 divide-y divide-zinc-100 text-base text-zinc-800 dark:divide-zinc-100/5 dark:text-zinc-300">
-                <MobileNavItem href="/about">About</MobileNavItem>
-                <MobileNavItem href="/resume">Resume</MobileNavItem>
-                <MobileNavItem href="/articles">Articles</MobileNavItem>
-                <MobileNavItem href="/projects">Projects</MobileNavItem>
-                {/* <MobileNavItem href="/speaking">Speaking</MobileNavItem> */}
-                <MobileNavItem href="/uses">Uses</MobileNavItem>
-                <MobileNavItem href="/spotify">Spotify</MobileNavItem>
-                <MobileNavItem href="/insta">Insta</MobileNavItem>
-                <MobileNavItem href="/leetcode">Leetcode</MobileNavItem>
+                <MobileNavItem href="/about" icon={FaUser}>About</MobileNavItem>
+                <MobileNavItem href="/projects" icon={FaLaptopCode}>Projects</MobileNavItem>
+                <MobileNavItem href="/resume" icon={FaBriefcase}>Resume</MobileNavItem>
+                <MobileNavItem href="/articles" icon={FaFileAlt}>Articles</MobileNavItem>
+                <MobileNavItem href="/spotify" icon={FaSpotify}>Spotify</MobileNavItem>
+                <MobileNavItem href="/insta" icon={FaInstagram}>Instagram</MobileNavItem>
+                <MobileNavItem href="/leetcode" icon={SiLeetcode}>Leetcode</MobileNavItem>
+                <MobileNavItem href="/uses" icon={FaTools}>Uses</MobileNavItem>
               </ul>
             </nav>
           </Popover.Panel>
@@ -141,7 +151,7 @@ function MobileNavigation(props) {
   )
 }
 
-function NavItem({ href, children }) {
+function NavItem({ href, children, icon: Icon }) {
   let isActive = useRouter().pathname === href
 
   return (
@@ -149,13 +159,14 @@ function NavItem({ href, children }) {
       <Link
         href={href}
         className={clsx(
-          'relative block px-3 py-2 transition',
+          'relative flex items-center px-3 py-2 transition',
           isActive
             ? 'text-teal-500 dark:text-teal-400'
             : 'hover:text-teal-500 dark:hover:text-teal-400'
         )}
       >
-        {children}
+        {Icon && <Icon className="mr-1.5 h-4 w-4 flex-shrink-0" />}
+        <span>{children}</span>
         {isActive && (
           <span className="absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-teal-500/0 via-teal-500/40 to-teal-500/0 dark:from-teal-400/0 dark:via-teal-400/40 dark:to-teal-400/0" />
         )}
@@ -168,16 +179,14 @@ function DesktopNavigation(props) {
   return (
     <nav {...props}>
       <ul className="flex rounded-full bg-white/90 px-3 text-sm font-medium text-zinc-800 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/10">
-        <NavItem href="/about">About</NavItem>
-        <NavItem href="/articles">Articles</NavItem>
-        <NavItem href='/resume'>Resume</NavItem>
-        <NavItem href="/projects">Projects</NavItem>
-        {/* <NavItem href="/speaking">Speaking</NavItem> */}
-        <NavItem href="/uses">Uses</NavItem>
-        <NavItem href="/spotify">Spotify</NavItem>
-        <NavItem href="/insta">Insta</NavItem>
-        <NavItem href="/leetcode">Leetcode</NavItem>
-
+        <NavItem href="/about" icon={FaUser}>About</NavItem>
+        <NavItem href="/projects" icon={FaLaptopCode}>Projects</NavItem>
+        <NavItem href='/resume' icon={FaBriefcase}>Resume</NavItem>        
+        <NavItem href="/articles" icon={FaFileAlt}>Articles</NavItem>
+        <NavItem href="/spotify" icon={FaSpotify}>Spotify</NavItem>
+        <NavItem href="/insta" icon={FaInstagram}>Instagram</NavItem>
+        <NavItem href="/leetcode" icon={SiLeetcode}>Leetcode</NavItem>
+        <NavItem href="/uses" icon={FaTools}>Uses</NavItem>
       </ul>
     </nav>
   )
