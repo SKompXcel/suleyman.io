@@ -293,6 +293,7 @@ export default function Home({ articles }) {
         <title>
           Suleyman Kiani | Home
         </title>
+        <link rel="icon" href="/favicon.ico" />
         <meta
           name="description"
           content="Hi, I'm Suleyman Kiani, a fitness and martial arts instructor, web developer, and enthusiast of chess and basketball."
