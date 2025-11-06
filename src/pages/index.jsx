@@ -19,7 +19,7 @@ import image3 from '@/images/photos/image-5.png'
 import video from '@/images/photos/progress.mp4'
 
 import logoSKompXcel from '@/images/logos/SKompXcel.png'
-import logoBTC from '@/images/logos/btc.png'
+import logoMHCC from '@/images/logos/btc.png'
 import logoGiftCash from '@/images/logos/giftcash.jpeg'
 import logoSDI from '@/images/logos/sdi.jpeg'
 import logoDevProtocol from '@/images/logos/devprotocol.png'
@@ -141,6 +141,13 @@ function Newsletter() {
 function Resume() {
   let resume = [
     {
+      company: 'Mitsubishi HC Capital Canada',
+      title: 'Associate Account Manager – Equipment Finance',
+      logo: logoMHCC,
+      start: 'Sep 2025',
+      end: 'Present',
+    },
+    {
       company: 'SKompXcel',
       title: 'Founder',
       logo: logoSKompXcel,
@@ -155,25 +162,18 @@ function Resume() {
       end: 'Present',
     },
     {
-      company: 'Burlington Training Center',
-      title: 'Software & IT Systems Developer / Martial Arts Instructor',
-      logo: logoBTC,
-      start: 'March 2024',
-      end: 'Present',
-    },
-    {
       company: 'GiftCash Inc.',
       title: 'Junior Web Developer',
       logo: logoGiftCash,
       start: 'May 2021',
-      end: ' Aug 2022',
+      end: 'Aug 2022',
     },
     {
       company: 'SDI Labs.',
       title: 'Software Engineer Intern',
       logo: logoSDI,
       start: 'June 2019',
-      end: ' Aug 2022',
+      end: 'Aug 2022',
     },
   ]
 
@@ -296,7 +296,7 @@ export default function Home({ articles }) {
         <link rel="icon" href="/favicon.ico" />
         <meta
           name="description"
-          content="Hi, I'm Suleyman Kiani, a fitness and martial arts instructor, web developer, and enthusiast of chess and basketball."
+          content="Suleyman Kiani - Associate Account Manager in equipment finance, MEng student in Computing and Software, and builder of tools like Applify AI and SKompXcel. Exploring the intersection of finance, ML, and cloud architecture."
         />
       </Head>
       {/* Hero Section */}
@@ -304,88 +304,108 @@ export default function Home({ articles }) {
         <div className="max-w-2xl">
           <div className="space-y-2 mb-6">
             <div className="inline-block rounded-full bg-zinc-100 px-3 py-1 text-sm text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200">
-              Cloud • Code • Combat
+              Finance • Code • Learning
             </div>
             <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
-              Craft, iterate, repeat.
+              Progress rewards curiosity and deliberate practice.
             </h1>
           </div>
           
-          <div className="space-y-6 text-base text-zinc-600 dark:text-zinc-400">
-            <p>
-              I&apos;m Suleyman Kiani—Suley if we train together.
-            </p>
-            <p>
-              By day I architect cloud systems, write full‑stack code, and guide CS students through algorithms at SKompXcel. 
-              After hours you&apos;ll find me on the mats coaching kickboxing, drilling rapid‑chess lines (1650 ELO peak), 
-              or chasing rebounds with a 38‑inch vertical.
-            </p>
-            <p>
-              My projects aim for simple outcomes: shave seconds off deployments, help someone land a job, 
-              or just make a user smile. Recent work includes Applify AI, an ATS‑savvy resume platform built 
-              with Next.js 15 & GPT‑4o, and a fitness‑tracking toolkit grown from my own coaching logs.
-            </p>
+          <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
+            I&apos;m <strong>Suleyman Kiani</strong>—building systems that turn ideas into reality. 
+            Currently balancing equipment finance at <strong>Mitsubishi HC Capital Canada</strong> with an 
+            <strong> MEng in Computing and Software</strong> (Dec 2026), while exploring the intersection 
+            of financial markets and machine learning.
+          </p>
+
+          {/* Key Metrics */}
+          <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="p-4 rounded-lg bg-gradient-to-br from-teal-50 to-teal-100 dark:from-teal-900/20 dark:to-teal-800/20 border border-teal-200 dark:border-teal-700/50">
+              <div className="text-2xl font-bold text-teal-700 dark:text-teal-400">150+</div>
+              <div className="text-xs text-teal-600 dark:text-teal-500 mt-1">Applify AI Users</div>
+            </div>
+            <div className="p-4 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border border-blue-200 dark:border-blue-700/50">
+              <div className="text-2xl font-bold text-blue-700 dark:text-blue-400">$1M+</div>
+              <div className="text-xs text-blue-600 dark:text-blue-500 mt-1">Deals Financed</div>
+            </div>
+            <div className="p-4 rounded-lg bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border border-purple-200 dark:border-purple-700/50">
+              <div className="text-2xl font-bold text-purple-700 dark:text-purple-400">80+</div>
+              <div className="text-xs text-purple-600 dark:text-purple-500 mt-1">Students Mentored</div>
+            </div>
+            <div className="p-4 rounded-lg bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 border border-orange-200 dark:border-orange-700/50">
+              <div className="text-2xl font-bold text-orange-700 dark:text-orange-400">1650</div>
+              <div className="text-xs text-orange-600 dark:text-orange-500 mt-1">Chess Rating</div>
+            </div>
           </div>
-          
-          {/* Focus Areas */}
-          <div className="mt-10">
-            <h2 className="text-xl font-semibold text-zinc-800 dark:text-zinc-100 mb-6">Focus Areas</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Tech & Cloud */}
-              <div className="p-5 rounded-xl bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-800/50 dark:to-zinc-900 border border-zinc-200 dark:border-zinc-700 hover:border-teal-500/40 dark:hover:border-teal-500/40 transition">
-                <div className="flex items-center mb-2">
-                  <Code className="h-5 w-5 text-teal-600 dark:text-teal-400 mr-2" />
-                  <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">Tech & Cloud</h3>
+
+          {/* What I Do */}
+          <div className="mt-8 space-y-4">
+            <h2 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">What I Do</h2>
+            <div className="grid gap-3">
+              <div className="flex items-start gap-3 p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/50">
+                <div className="flex-shrink-0 mt-0.5">
+                  <div className="h-2 w-2 rounded-full bg-teal-500"></div>
                 </div>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  Serverless AWS / GCP · DevOps automation · TypeScript / Next.js
-                </p>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Equipment Finance</h3>
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+                    Structure multi-million dollar construction & transportation deals. Build financial spreads, 
+                    calculate EBITDA from statements, conduct 4-blocker credit evaluations, and model amortization 
+                    schedules in Excel & Power BI.
+                  </p>
+                </div>
               </div>
-              
-              {/* Fitness & Martial Arts */}
-              <div className="p-5 rounded-xl bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-800/50 dark:to-zinc-900 border border-zinc-200 dark:border-zinc-700 hover:border-teal-500/40 dark:hover:border-teal-500/40 transition">
-                <div className="flex items-center mb-2">
-                  <Dumbbell className="h-5 w-5 text-teal-600 dark:text-teal-400 mr-2" />
-                  <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">Fitness & Martial Arts</h3>
+
+              <div className="flex items-start gap-3 p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/50">
+                <div className="flex-shrink-0 mt-0.5">
+                  <div className="h-2 w-2 rounded-full bg-blue-500"></div>
                 </div>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  Kickboxing · Wado Ryu Karate · strength programming
-                </p>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Software Engineering</h3>
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+                    Built <strong>Applify AI</strong> (150+ paying users)—an ATS-optimized résumé platform. Founded 
+                    <strong> SKompXcel</strong>, mentoring 80+ students through algorithms, system design, and mock interviews. 
+                    TypeScript, Next.js, Python, AWS, GCP.
+                  </p>
+                </div>
               </div>
-              
-              {/* Learning & Mentorship */}
-              <div className="p-5 rounded-xl bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-800/50 dark:to-zinc-900 border border-zinc-200 dark:border-zinc-700 hover:border-teal-500/40 dark:hover:border-teal-500/40 transition">
-                <div className="flex items-center mb-2">
-                  <GraduationCap className="h-5 w-5 text-teal-600 dark:text-teal-400 mr-2" />
-                  <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">Learning & Mentorship</h3>
+
+              <div className="flex items-start gap-3 p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/50">
+                <div className="flex-shrink-0 mt-0.5">
+                  <div className="h-2 w-2 rounded-full bg-purple-500"></div>
                 </div>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  Tutoring · algorithm walkthroughs · study systems
-                </p>
-              </div>
-              
-              {/* Projects & Experiments */}
-              <div className="p-5 rounded-xl bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-800/50 dark:to-zinc-900 border border-zinc-200 dark:border-zinc-700 hover:border-teal-500/40 dark:hover:border-teal-500/40 transition">
-                <div className="flex items-center mb-2">
-                  <Lightbulb className="h-5 w-5 text-teal-600 dark:text-teal-400 mr-2" />
-                  <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">Projects & Experiments</h3>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Research & Learning</h3>
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+                    Pursuing MEng in Computing & Software while diving into ML and financial markets—building 
+                    systems that bridge data and decision-making.
+                  </p>
                 </div>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  Open‑source tools · data scrapers · AI side quests
-                </p>
               </div>
             </div>
           </div>
           
-          {/* Reach Out */}
-          <div className="mt-10">
-            <p className="text-base text-zinc-600 dark:text-zinc-400">
-              <strong>Reach Out</strong> – If you&apos;re exploring scalable architectures, sharpening problem‑solving skills, 
-              or simply enjoy a good endgame study, my inbox is open.
+          {/* Tech Stack */}
+          <div className="mt-8">
+            <h2 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100 mb-4">Tech Stack</h2>
+            <div className="flex flex-wrap gap-2">
+              {['TypeScript', 'Next.js', 'Python', 'Node.js', 'PostgreSQL', 'AWS', 'GCP', 'Terraform', 'Excel', 'Power BI'].map((tech) => (
+                <span key={tech} className="px-3 py-1.5 text-xs font-medium rounded-full bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="mt-8 p-6 rounded-xl bg-gradient-to-br from-teal-50 to-blue-50 dark:from-teal-900/10 dark:to-blue-900/10 border border-teal-200 dark:border-teal-800/50">
+            <p className="text-sm text-zinc-700 dark:text-zinc-300">
+              <strong>Let&apos;s Connect</strong> — Exploring cloud architecture, ML in finance, or just enjoy a good chess endgame? 
+              My inbox is open.
             </p>
             
             {/* Social Links */}
-            <div className="mt-6 flex gap-6">
+            <div className="mt-4 flex gap-4">
               <SocialLink
                 href="https://www.instagram.com/svley/"
                 aria-label="Follow on Instagram"
@@ -413,53 +433,40 @@ export default function Home({ articles }) {
         </div>
       </Container>
             {/* Site Description */}
-            <Container className="mt-20">
+            <Container className="mt-16">
         <div className="max-w-2xl">
-          <div className="mb-8">
-            <h2 className="inline-block text-xl font-bold text-zinc-800 dark:text-zinc-100">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-zinc-800 dark:text-zinc-100 mb-2">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-sky-500">
                 suleyman.io
               </span>
             </h2>
-            <p className="text-lg font-medium text-zinc-700 dark:text-zinc-300">
-              Building systems, sharing the craft.
+            <p className="text-base text-zinc-600 dark:text-zinc-400">
+              My working logbook—code, experiments, and lessons from building Applify AI, SKompXcel, 
+              and a stack of open‑source tools.
             </p>
           </div>
           
-          <div className="space-y-6 text-base text-zinc-600 dark:text-zinc-400">
-            <p>
-              This site is my working logbook—code, experiments, and lessons drawn from projects 
-              like Applify AI, SKompXcel, and a stack of open‑source tools. Inside you&apos;ll find:
-            </p>
-            
-            <div className="space-y-4 pl-4 border-l-2 border-zinc-200 dark:border-zinc-700">
-              <div>
-                <h3 className="font-semibold text-zinc-800 dark:text-zinc-100">Projects</h3>
-                <p className="text-sm">live demos, architecture notes, and post‑mortems</p>
-              </div>
-              
-              <div>
-                <h3 className="font-semibold text-zinc-800 dark:text-zinc-100">Articles</h3>
-                <p className="text-sm">bite‑sized write‑ups on cloud patterns, DevOps automation, and problem‑solving heuristics</p>
-              </div>
-              
-              <div>
-                <h3 className="font-semibold text-zinc-800 dark:text-zinc-100">Resume & Uses</h3>
-                <p className="text-sm">skills, stack, and the gear that keeps the wheels turning</p>
-              </div>
-              
-              <div>
-                <h3 className="font-semibold text-zinc-800 dark:text-zinc-100">Dashboards</h3>
-                <p className="text-sm">LeetCode progress, Spotify listening habits, and other data‑driven snapshots</p>
-              </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/50">
+              <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm mb-1">Projects</h3>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400">Live demos, architecture notes & post‑mortems</p>
             </div>
             
-            <p>
-              All of it runs on a Next.js + Tailwind stack, stitched together with API integrations 
-              (Spotify, Instagram, custom scrapers) and tuned for performance. The goal is simple: 
-              make useful things, document the process, and leave the door open for anyone who wants 
-              to learn—or teach—something new.
-            </p>
+            <div className="p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/50">
+              <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm mb-1">Articles</h3>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400">Cloud patterns, DevOps automation & problem‑solving</p>
+            </div>
+            
+            <div className="p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/50">
+              <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm mb-1">Resume & Uses</h3>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400">Skills, stack & gear that keeps the wheels turning</p>
+            </div>
+            
+            <div className="p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/50">
+              <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm mb-1">Dashboards</h3>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400">LeetCode, Spotify & other data‑driven snapshots</p>
+            </div>
           </div>
         </div>
       </Container>
@@ -483,8 +490,8 @@ export default function Home({ articles }) {
                   Applify AI — Your Personal <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-yellow-100">Résumé-Tailoring</span> Engine
                 </h2>
                 <p className="text-lg md:text-xl text-white/90 leading-relaxed max-w-xl">
-                  Paste any job description, watch your CV reshape itself for maximum ATS & recruiter impact, 
-                  then download a perfect one-page PDF in minutes.
+                  Paste any job description, get an ATS-optimized résumé tailored to your achievements. 
+                  Download a perfect one-page PDF in minutes. <strong>150+ paying users</strong> and counting.
                 </p>
                 
                 <div className="flex flex-wrap gap-5 pt-4">

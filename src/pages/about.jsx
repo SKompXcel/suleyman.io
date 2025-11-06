@@ -84,7 +84,7 @@ export default function About() {
         <title>About | Suleyman Kiani</title>
         <meta
           name="description"
-          content="I'm Suleyman 'Suley' Kiani: software engineer, cloud architect, martial arts instructor, and perennial student of whatever looks interesting."
+          content="I'm Suleyman 'Suley' Kiani: Associate Account Manager in equipment finance, MEng student, and builder of tools like Applify AI. Exploring finance, ML, and cloud architecture."
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -111,14 +111,23 @@ export default function About() {
             
             <div className="prose dark:prose-invert">
               <p className="text-lg text-zinc-600 dark:text-zinc-400 mb-8">
-                Hey — I&apos;m <strong>Suleyman &apos;Suley&apos; Kiani</strong>: software engineer, cloud architect, 
-                martial‑arts instructor, and perennial student of whatever looks interesting.
+                A few lines of code, a well‑timed chess tactic, or a calm slip inside a kick‑boxing exchange all point to the same truth: progress rewards curiosity and deliberate practice. I&apos;m <strong>Suleyman &apos;Suley&apos; Kiani</strong>, a perennial student who builds software because it turns day‑dreams into reality.
               </p>
             </div>
             
             <div className="mt-10 space-y-10">
               <section>
-                <SectionHeading icon={Code}>I like making useful things that lift people up</SectionHeading>
+                <SectionHeading icon={GraduationCap}>Current Journey</SectionHeading>
+                <p className="text-zinc-600 dark:text-zinc-400">
+                  Since September 2025, I&apos;ve been balancing two parallel tracks: working full time as an <strong>Associate Account Manager in equipment finance</strong> at Mitsubishi HC Capital Canada, and pursuing an <strong>MEng in Computing and Software</strong> (expected Dec 2026). By day I structure multi‑million‑dollar deals, run credit analysis, and build amortization models in Excel and Power BI. By night I&apos;m diving into machine learning, sharpening my understanding of financial markets, and threading together what I learn in both worlds. My goal is to gain experience in financial markets while deepening my technical foundation—so I can build intelligent systems that bridge the gap between data and decision‑making.
+                </p>
+              </section>
+              
+              <section>
+                <SectionHeading icon={Code}>Building Useful Things</SectionHeading>
+                <p className="text-zinc-600 dark:text-zinc-400 mb-4">
+                  At McMaster University I was essentially the unofficial &ldquo;CS ambassador,&rdquo; guiding visitors through labs, pair‑debugging first‑years on segmentation faults, and learning as much from their fresh questions as they did from my answers. That give‑and‑take grew into SKompXcel, the mentorship platform where more than 80 learners have drilled algorithms, systems design, mock interviews, and résumé reviews.
+                </p>
                 <div className="mt-4 space-y-1">
                   <ProjectCard
                     title="Applify AI"
@@ -145,26 +154,24 @@ export default function About() {
               </section>
               
               <section>
-                <SectionHeading icon={Basketball}>Off the clock</SectionHeading>
+                <SectionHeading icon={Basketball}>Off the Clock</SectionHeading>
                 <p className="text-zinc-600 dark:text-zinc-400">
-                  Rapid chess keeps my brain sharp (1650 ELO peak), basketball keeps my legs springy (38&rdquo; vertical), 
-                  and tutoring keeps me grounded—there&apos;s nothing like watching a concept finally click for someone.
+                  Rapid chess keeps my brain sharp (1650 ELO peak), kick‑boxing keeps me grounded, 
+                  and mentoring keeps me curious—there&apos;s nothing like watching a concept finally click for someone.
                 </p>
               </section>
               
               <section>
-                <SectionHeading icon={Heart}>Guiding ideas</SectionHeading>
+                <SectionHeading icon={Heart}>Guiding Ideas</SectionHeading>
                 <p className="text-zinc-600 dark:text-zinc-400">
-                  Empathy first, iterate fast, share what you learn. Whether I&aposm refactoring a codebase 
-                  or walking a student through dynamic programming, the goal is the same: make the next 
-                  step easier for the person beside me.
+                  Empathy first, iterate fast, share what you learn. Whether I&apos;m analyzing credit structures, refactoring a codebase, or walking a student through dynamic programming, the goal is the same: make the next step easier for the person beside me.
                 </p>
               </section>
               
               <section>
                 <SectionHeading icon={Terminal}>Tech Snapshot</SectionHeading>
                 <div className="flex flex-wrap gap-2 mt-3">
-                  {['TypeScript', 'Next.js', 'Node', 'AWS', 'GCP', 'PostgreSQL', 'MongoDB', 'Terraform', 'CI/CD', 'Python'].map((tech) => (
+                  {['TypeScript', 'Next.js', 'Node', 'AWS', 'GCP', 'PostgreSQL', 'Python', 'Terraform', 'Excel', 'Power BI'].map((tech) => (
                     <span 
                       key={tech} 
                       className="px-3 py-1 text-xs bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300 rounded-full"
@@ -177,7 +184,7 @@ export default function About() {
               
               <section>
                 <p className="text-zinc-600 dark:text-zinc-400 italic border-l-4 border-zinc-200 dark:border-zinc-700 pl-4 py-1">
-                  If you&apos;re curious about the projects above—or have one that could use a hand—feel free to reach out.
+                  If you&apos;re exploring thoughtful cloud architecture, pragmatic AI, financial tech, or just enjoy trading endgame ideas, feel free to reach out.
                 </p>
               </section>
             </div>
