@@ -325,7 +325,7 @@ export default function Home({ articles }) {
               <div className="text-xs text-teal-600 dark:text-teal-500 mt-1">Applify AI Users</div>
             </div>
             <div className="p-4 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border border-blue-200 dark:border-blue-700/50">
-              <div className="text-2xl font-bold text-blue-700 dark:text-blue-400">$1M+</div>
+              <div className="text-2xl font-bold text-blue-700 dark:text-blue-400">$5M+</div>
               <div className="text-xs text-blue-600 dark:text-blue-500 mt-1">Deals Financed</div>
             </div>
             <div className="p-4 rounded-lg bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border border-purple-200 dark:border-purple-700/50">
