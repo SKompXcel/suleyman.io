@@ -92,6 +92,15 @@ const STAGES = [
     requiresVision: true,
     allowedNextStages: ['funded', 'audit-corrections']
   },
+    { 
+    id: 'post-funding-requirements', 
+    name: 'Post Funding', 
+    color: 'bg-indigo-600', 
+    description: 'Additional requirements after funding',
+    requiresVision: true,
+    allowedNextStages: ['funded']
+  },
+  ,
   { 
     id: 'funded', 
     name: 'Funded ✓', 
@@ -112,6 +121,8 @@ export default function Deals() {
   const [showEditModal, setShowEditModal] = useState(false)
   const [selectedDeal, setSelectedDeal] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
+  const [searchField, setSearchField] = useState('all')
+  const [searchMode, setSearchMode] = useState('contains')
   const [filterAssignee, setFilterAssignee] = useState('all')
   const [validationError, setValidationError] = useState(null)
   const [savedVendors, setSavedVendors] = useState([])
@@ -208,6 +219,7 @@ export default function Deals() {
           updatedAt: new Date(deal.updated_at),
           visionNumber: deal.vision_number,
           assignedTo: deal.assigned_to,
+          folderLink: deal.folder_link,
         }))
 
         setDeals(dealsWithDates)
@@ -358,6 +370,7 @@ export default function Deals() {
           stage: 'new-opportunity',
           assigned_to: newDeal.assignedTo || 'unassigned',
           notes: newDeal.notes || '',
+          folder_link: newDeal.folderLink || null,
           created_by: user.id
         })
         .select()
@@ -372,6 +385,7 @@ export default function Deals() {
         updatedAt: new Date(data.updated_at),
         visionNumber: data.vision_number,
         assignedTo: data.assigned_to,
+        folderLink: data.folder_link,
       }
 
       setDeals([dealWithDates, ...deals])
@@ -406,6 +420,7 @@ export default function Deals() {
           stage: updatedDeal.stage,
           assigned_to: updatedDeal.assignedTo,
           notes: updatedDeal.notes || '',
+          folder_link: updatedDeal.folderLink || null,
         })
         .eq('id', updatedDeal.id)
 
@@ -449,10 +464,42 @@ export default function Deals() {
   const getDealsForStage = (stageId) => {
     return deals.filter(deal => {
       const matchesStage = deal.stage === stageId
-      const matchesSearch = searchTerm === '' || 
-        (deal.visionNumber && deal.visionNumber.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        deal.vendor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        deal.client.toLowerCase().includes(searchTerm.toLowerCase())
+      
+      // Enhanced search logic
+      let matchesSearch = true
+      if (searchTerm !== '') {
+        const searchLower = searchTerm.toLowerCase()
+        
+        const checkMatch = (value) => {
+          if (!value) return false
+          const valueLower = value.toLowerCase()
+          
+          if (searchMode === 'exact') {
+            return valueLower === searchLower
+          } else if (searchMode === 'starts-with') {
+            return valueLower.startsWith(searchLower)
+          } else { // contains
+            return valueLower.includes(searchLower)
+          }
+        }
+        
+        if (searchField === 'all') {
+          matchesSearch = 
+            checkMatch(deal.visionNumber) ||
+            checkMatch(deal.vendor) ||
+            checkMatch(deal.client) ||
+            checkMatch(deal.notes)
+        } else if (searchField === 'vision') {
+          matchesSearch = checkMatch(deal.visionNumber)
+        } else if (searchField === 'vendor') {
+          matchesSearch = checkMatch(deal.vendor)
+        } else if (searchField === 'client') {
+          matchesSearch = checkMatch(deal.client)
+        } else if (searchField === 'notes') {
+          matchesSearch = checkMatch(deal.notes)
+        }
+      }
+      
       const matchesAssignee = filterAssignee === 'all' || deal.assignedTo === filterAssignee
       return matchesStage && matchesSearch && matchesAssignee
     })
@@ -650,17 +697,54 @@ export default function Deals() {
 
               {/* Search and Stats Bar */}
               <div className="flex items-center gap-4">
-              <div className="flex-1 relative">
-                <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Search by Vision #, Vendor, or Client..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 rounded-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900 outline-none text-base"
-                />
+              <div className="flex-1 flex gap-2">
+                {/* Search Field Selector */}
+                <select
+                  value={searchField}
+                  onChange={(e) => setSearchField(e.target.value)}
+                  className="px-3 py-3 rounded-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900 outline-none text-sm font-medium min-w-[140px]"
+                >
+                  <option value="all">All Fields</option>
+                  <option value="vision">Vision #</option>
+                  <option value="vendor">Vendor</option>
+                  <option value="client">Client</option>
+                  <option value="notes">Notes</option>
+                </select>
+
+                {/* Search Mode Selector */}
+                <select
+                  value={searchMode}
+                  onChange={(e) => setSearchMode(e.target.value)}
+                  className="px-3 py-3 rounded-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900 outline-none text-sm font-medium min-w-[140px]"
+                >
+                  <option value="contains">Contains</option>
+                  <option value="exact">Exact Match</option>
+                  <option value="starts-with">Starts With</option>
+                </select>
+
+                {/* Search Input */}
+                <div className="flex-1 relative">
+                  <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  <input
+                    type="text"
+                    placeholder={`Search ${searchField === 'all' ? 'all fields' : searchField}...`}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-12 pr-4 py-3 rounded-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900 outline-none text-base"
+                  />
+                  {searchTerm && (
+                    <button
+                      onClick={() => setSearchTerm('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
               </div>
               
               {/* Filter by Assignee */}
@@ -787,6 +871,25 @@ export default function Deals() {
                             </div>
                           </div>
 
+                          {/* Folder Link */}
+                          {deal.folderLink && (
+                            <div className="mb-3">
+                              <div className="text-xs text-slate-500 dark:text-slate-400 mb-1">FOLDER</div>
+                              <a
+                                href={deal.folderLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center gap-2 text-sm font-medium underline"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                                </svg>
+                                Open Folder
+                              </a>
+                            </div>
+                          )}
+
                           {/* Notes */}
                           {deal.notes && (
                             <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
@@ -895,6 +998,7 @@ function DealModal({ deal, onClose, onSave, onDelete, title, stages, savedVendor
     vendor: '',
     client: '',
     notes: '',
+    folderLink: '',
     stage: 'new-opportunity',
     assignedTo: 'unassigned',
   })
@@ -1118,6 +1222,28 @@ function DealModal({ deal, onClose, onSave, onDelete, title, stages, savedVendor
                 </p>
               )}
             </div>
+          </div>
+
+          {/* Folder Link */}
+          <div>
+            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wide">
+              Link to Folder
+            </label>
+            <div className="relative">
+              <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+              </svg>
+              <input
+                type="url"
+                value={formData.folderLink}
+                onChange={(e) => setFormData({ ...formData, folderLink: e.target.value })}
+                className="w-full pl-12 pr-4 rounded-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-4 text-lg text-slate-900 dark:text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900 outline-none"
+                placeholder="https://drive.google.com/... or Dropbox/OneDrive link"
+              />
+            </div>
+            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+              💡 Paste a link to Google Drive, Dropbox, OneDrive, or any folder containing deal files
+            </p>
           </div>
 
           {/* Notes */}
