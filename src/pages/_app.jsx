@@ -25,6 +25,7 @@ function usePrevious(value) {
 export default function App({ Component, pageProps, router }) {
   let previousPathname = usePrevious(router.pathname)
   const isInstaPage = router.pathname === '/insta'
+  const isDealsPage = router.pathname === '/deals'
 
   return (
     <>
@@ -81,12 +82,12 @@ export default function App({ Component, pageProps, router }) {
       {/* Main Layout */}
       <div className="relative">
         {/* Conditionally Render Header */}
-        {!isInstaPage && <Header />}
+        {!isInstaPage && !isDealsPage && <Header />}
         <main>
           <Component previousPathname={previousPathname} {...pageProps} />
         </main>
         {/* Conditionally Render Footer */}
-        {!isInstaPage && <Footer />}
+        {!isInstaPage && !isDealsPage && <Footer />}
       </div>
       
       <Analytics />
