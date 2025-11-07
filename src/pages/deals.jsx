@@ -90,9 +90,9 @@ const STAGES = [
     color: 'bg-cyan-600', 
     description: 'Final audit review',
     requiresVision: true,
-    allowedNextStages: ['funded', 'audit-corrections']
+    allowedNextStages: ['post-funding-requirements', 'audit-corrections']
   },
-    { 
+  { 
     id: 'post-funding-requirements', 
     name: 'Post Funding', 
     color: 'bg-indigo-600', 
@@ -100,7 +100,6 @@ const STAGES = [
     requiresVision: true,
     allowedNextStages: ['funded']
   },
-  ,
   { 
     id: 'funded', 
     name: 'Funded ✓', 
@@ -132,6 +131,13 @@ export default function Deals() {
   const [loginEmail, setLoginEmail] = useState('')
   const [loginPassword, setLoginPassword] = useState('')
   const [loginError, setLoginError] = useState('')
+  const [boardNotes, setBoardNotes] = useState([])
+  const [newNote, setNewNote] = useState('')
+  const [showNotesPanel, setShowNotesPanel] = useState(true)
+  const [dealComments, setDealComments] = useState([])
+  const [newComment, setNewComment] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   // Determine which board to show
   const activeBoardId = (profile?.role === 'associate' || profile?.role === 'director') ? viewingBoard : profile?.board_id
@@ -140,7 +146,16 @@ export default function Deals() {
   useEffect(() => {
     const initAuth = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession()
+        const { data: { session }, error } = await supabase.auth.getSession()
+        
+        if (error) {
+          console.error('Session error:', error)
+          // Clear any invalid session
+          await supabase.auth.signOut()
+          setShowLoginModal(true)
+          setLoading(false)
+          return
+        }
         
         if (session) {
           setUser(session.user)
@@ -160,6 +175,8 @@ export default function Deals() {
 
     // Listen for auth changes
     const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state changed:', event, session?.user?.email)
+      
       if (event === 'SIGNED_IN' && session) {
         await fetchUserProfile(session.user.id)
       } else if (event === 'SIGNED_OUT') {
@@ -167,6 +184,12 @@ export default function Deals() {
         setProfile(null)
         setViewingBoard(null)
         setShowLoginModal(true)
+      } else if (event === 'TOKEN_REFRESHED') {
+        console.log('Token refreshed successfully')
+      } else if (event === 'USER_UPDATED') {
+        if (session) {
+          setUser(session.user)
+        }
       }
     })
 
@@ -242,6 +265,26 @@ export default function Deals() {
         }
       } catch (error) {
         console.error('Error loading vendors/clients:', error)
+      }
+
+      // Load board notes
+      try {
+        const { data: notesData, error: notesError } = await supabase
+          .from('board_notes')
+          .select('*')
+          .eq('board_id', activeBoardId)
+          .order('created_at', { ascending: false })
+
+        if (notesError) throw notesError
+
+        const notesWithDates = notesData.map(note => ({
+          ...note,
+          createdAt: new Date(note.created_at)
+        }))
+
+        setBoardNotes(notesWithDates)
+      } catch (error) {
+        console.error('Error loading board notes:', error)
       }
     }
 
@@ -334,7 +377,7 @@ export default function Deals() {
       if (error) throw error
 
       // Update local state
-      setDeals(deals.map(deal => 
+      setDeals(prevDeals => prevDeals.map(deal => 
         deal.id === dealId 
           ? { ...deal, stage: newStage, updatedAt: new Date() }
           : deal
@@ -346,20 +389,42 @@ export default function Deals() {
   }
 
   const addDeal = async (newDeal) => {
+    console.log('🔵 Starting addDeal...', { newDeal, currentDealsCount: deals.length })
+    setSaving(true)
     try {
       // Add vendor if new
+      console.log('🔵 Checking vendor...', { vendor: newDeal.vendor, savedVendors })
       if (newDeal.vendor && !savedVendors.includes(newDeal.vendor)) {
-        await supabase.from('vendors').insert({ name: newDeal.vendor })
+        console.log('🔵 Adding new vendor:', newDeal.vendor)
+        const { error: vendorError } = await supabase.from('vendors').insert({ name: newDeal.vendor })
+        if (vendorError) {
+          console.error('❌ Vendor error:', vendorError)
+          throw vendorError
+        }
+        console.log('✅ Vendor added successfully')
         setSavedVendors([...savedVendors, newDeal.vendor].sort())
       }
 
       // Add client if new
+      console.log('🔵 Checking client...', { client: newDeal.client, savedClients })
       if (newDeal.client && !savedClients.includes(newDeal.client)) {
-        await supabase.from('clients').insert({ name: newDeal.client })
+        console.log('🔵 Adding new client:', newDeal.client)
+        const { error: clientError } = await supabase.from('clients').insert({ name: newDeal.client })
+        if (clientError) {
+          console.error('❌ Client error:', clientError)
+          throw clientError
+        }
+        console.log('✅ Client added successfully')
         setSavedClients([...savedClients, newDeal.client].sort())
       }
 
       // Insert deal
+      console.log('🔵 Inserting deal...', {
+        board_id: activeBoardId,
+        vendor: newDeal.vendor,
+        client: newDeal.client,
+        user_id: user?.id
+      })
       const { data, error } = await supabase
         .from('deals')
         .insert({
@@ -376,7 +441,13 @@ export default function Deals() {
         .select()
         .single()
 
-      if (error) throw error
+      if (error) {
+        console.error('❌ Deal insert error:', error)
+        console.error('❌ Error details:', JSON.stringify(error, null, 2))
+        throw error
+      }
+
+      console.log('✅ Deal inserted:', data)
 
       // Add to local state
       const dealWithDates = {
@@ -388,15 +459,31 @@ export default function Deals() {
         folderLink: data.folder_link,
       }
 
-      setDeals([dealWithDates, ...deals])
+      console.log('🔵 Updating local state...', { dealWithDates })
+      setDeals(prevDeals => {
+        console.log('🔵 Previous deals count:', prevDeals.length)
+        const newDeals = [dealWithDates, ...prevDeals]
+        console.log('✅ New deals count:', newDeals.length)
+        return newDeals
+      })
+      
+      console.log('✅ Closing modal...')
       setShowAddModal(false)
+      console.log('✅ addDeal completed successfully!')
     } catch (error) {
-      console.error('Error adding deal:', error)
-      alert('Failed to add deal. Please try again.')
+      console.error('❌ FATAL ERROR in addDeal:', error)
+      console.error('❌ Error details:', JSON.stringify(error, null, 2))
+      console.error('❌ Error stack:', error.stack)
+      alert(`Failed to add deal: ${error.message || 'Unknown error'}. Check console for details.`)
+    } finally {
+      console.log('🔵 Resetting saving state...')
+      setSaving(false)
+      console.log('✅ Saving state reset')
     }
   }
 
   const updateDeal = async (updatedDeal) => {
+    setSaving(true)
     try {
       // Add vendor if new
       if (updatedDeal.vendor && !savedVendors.includes(updatedDeal.vendor)) {
@@ -424,10 +511,14 @@ export default function Deals() {
         })
         .eq('id', updatedDeal.id)
 
-      if (error) throw error
+      if (error) {
+        console.error('Error updating deal:', error)
+        console.error('Error details:', JSON.stringify(error, null, 2))
+        throw error
+      }
 
       // Update local state
-      setDeals(deals.map(deal => 
+      setDeals(prevDeals => prevDeals.map(deal => 
         deal.id === updatedDeal.id 
           ? { ...updatedDeal, updatedAt: new Date() }
           : deal
@@ -437,12 +528,17 @@ export default function Deals() {
       setSelectedDeal(null)
     } catch (error) {
       console.error('Error updating deal:', error)
-      alert('Failed to update deal. Please try again.')
+      console.error('Error details:', JSON.stringify(error, null, 2))
+      alert(`Failed to update deal: ${error.message || 'Unknown error'}. Check console for details.`)
+    } finally {
+      setSaving(false)
     }
   }
 
   const deleteDeal = async (dealId) => {
     if (!confirm('Are you sure you want to delete this deal?')) return
+
+    setDeleting(true)
 
     try {
       const { error } = await supabase
@@ -450,14 +546,21 @@ export default function Deals() {
         .delete()
         .eq('id', dealId)
 
-      if (error) throw error
+      if (error) {
+        console.error('Error deleting deal:', error)
+        console.error('Error details:', JSON.stringify(error, null, 2))
+        throw error
+      }
 
-      setDeals(deals.filter(deal => deal.id !== dealId))
+      setDeals(prevDeals => prevDeals.filter(deal => deal.id !== dealId))
       setShowEditModal(false)
       setSelectedDeal(null)
     } catch (error) {
       console.error('Error deleting deal:', error)
-      alert('Failed to delete deal. Please try again.')
+      console.error('Error details:', JSON.stringify(error, null, 2))
+      alert(`Failed to delete deal: ${error.message || 'Unknown error'}. Check console for details.`)
+    } finally {
+      setDeleting(false)
     }
   }
 
@@ -511,6 +614,135 @@ export default function Deals() {
 
   const getAssigneeInfo = (assigneeId) => {
     return TEAM_MEMBERS.find(m => m.id === assigneeId) || TEAM_MEMBERS[0]
+  }
+
+  const addBoardNote = async () => {
+    if (!newNote.trim()) return
+
+    try {
+      const { data, error } = await supabase
+        .from('board_notes')
+        .insert({
+          board_id: activeBoardId,
+          content: newNote.trim(),
+          created_by: user.id,
+          author_name: profile.full_name
+        })
+        .select()
+        .single()
+
+      if (error) throw error
+
+      const noteWithDate = {
+        ...data,
+        createdAt: new Date(data.created_at)
+      }
+
+      setBoardNotes(prevNotes => [noteWithDate, ...prevNotes])
+      setNewNote('')
+    } catch (error) {
+      console.error('Error adding note:', error)
+      alert('Failed to add note. Please try again.')
+    }
+  }
+
+  const deleteBoardNote = async (noteId) => {
+    if (!confirm('Are you sure you want to delete this note?')) return
+
+    try {
+      const { error } = await supabase
+        .from('board_notes')
+        .delete()
+        .eq('id', noteId)
+
+      if (error) throw error
+
+      setBoardNotes(prevNotes => prevNotes.filter(note => note.id !== noteId))
+    } catch (error) {
+      console.error('Error deleting note:', error)
+      alert('Failed to delete note. Please try again.')
+    }
+  }
+
+  // Deal comments functions
+  const fetchDealComments = async (dealId) => {
+    try {
+      const { data, error } = await supabase
+        .from('deal_comments')
+        .select('*')
+        .eq('deal_id', dealId)
+        .order('created_at', { ascending: false })
+
+      if (error) {
+        // If table doesn't exist (404), just return empty
+        if (error.code === 'PGRST204' || error.message?.includes('does not exist')) {
+          console.warn('deal_comments table not found - run add_deal_comments.sql in Supabase')
+          setDealComments([])
+          return
+        }
+        throw error
+      }
+
+      setDealComments(data.map(comment => ({
+        ...comment,
+        createdAt: new Date(comment.created_at)
+      })))
+    } catch (error) {
+      console.error('Error fetching deal comments:', error)
+      setDealComments([]) // Set empty array on error
+    }
+  }
+
+  const addDealComment = async (dealId) => {
+    if (!newComment.trim()) return
+
+    try {
+      const { data, error } = await supabase
+        .from('deal_comments')
+        .insert({
+          deal_id: dealId,
+          content: newComment.trim(),
+          created_by: user.id,
+          author_name: profile.full_name
+        })
+        .select()
+        .single()
+
+      if (error) {
+        console.error('Error adding comment:', error)
+        console.error('Error details:', JSON.stringify(error, null, 2))
+        throw error
+      }
+
+      const commentWithDate = {
+        ...data,
+        createdAt: new Date(data.created_at)
+      }
+
+      setDealComments(prevComments => [commentWithDate, ...prevComments])
+      setNewComment('')
+    } catch (error) {
+      console.error('Error adding comment:', error)
+      alert(`Failed to add comment: ${error.message || 'Unknown error'}. Check console for details.`)
+    }
+  }
+
+  const deleteDealComment = async (commentId) => {
+    if (!confirm('Are you sure you want to delete this comment?')) return
+
+    try {
+      const { error } = await supabase
+        .from('deal_comments')
+        .delete()
+        .eq('id', commentId)
+
+      if (error) throw error
+
+      setDealComments(prevComments => prevComments.filter(comment => comment.id !== commentId))
+    } catch (error) {
+      console.error('Error deleting comment:', error)
+      alert('Failed to delete comment. Please try again.')
+    }
   }
 
   return (
@@ -783,10 +1015,133 @@ export default function Deals() {
           </div>
         </div>
 
-        {/* Kanban Board */}
-        <div className="p-6 overflow-x-auto">
-          <div className="inline-flex gap-4 pb-6" style={{ minWidth: '100%' }}>
-            {STAGES.map(stage => {
+        {/* Main Content Area with Notes Panel and Kanban Board */}
+        <div className="flex gap-6 p-6">
+          {/* Board Notes Panel */}
+          {showNotesPanel && (
+            <div className="w-80 flex-shrink-0">
+              <div className="bg-white dark:bg-slate-900 rounded-xl shadow-lg sticky top-24 max-h-[calc(100vh-140px)] flex flex-col">
+                {/* Notes Header */}
+                <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 px-4 py-4 rounded-t-xl flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <h3 className="text-white font-bold text-lg">Board Notes</h3>
+                  </div>
+                  <button
+                    onClick={() => setShowNotesPanel(false)}
+                    className="text-white/80 hover:text-white hover:bg-white/20 rounded p-1 transition-colors"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Current Date Display */}
+                <div className="px-4 py-3 bg-indigo-50 dark:bg-indigo-900/20 border-b border-indigo-200 dark:border-indigo-800">
+                  <div className="text-sm font-bold text-indigo-900 dark:text-indigo-300">
+                    {new Date().toLocaleDateString('en-US', { 
+                      weekday: 'long', 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </div>
+                </div>
+
+                {/* Add Note Input */}
+                <div className="p-4 border-b border-slate-200 dark:border-slate-700">
+                  <textarea
+                    value={newNote}
+                    onChange={(e) => setNewNote(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                        addBoardNote()
+                      }
+                    }}
+                    placeholder="Add a note... (⌘+Enter to save)"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-900 outline-none resize-none text-sm"
+                    rows={3}
+                  />
+                  <button
+                    onClick={addBoardNote}
+                    disabled={!newNote.trim()}
+                    className="mt-2 w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded-lg transition-all text-sm"
+                  >
+                    Add Note
+                  </button>
+                </div>
+
+                {/* Notes List */}
+                <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                  {boardNotes.length === 0 ? (
+                    <div className="text-center text-slate-400 dark:text-slate-600 py-8 text-sm">
+                      <svg className="w-12 h-12 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      No notes yet
+                    </div>
+                  ) : (
+                    boardNotes.map(note => (
+                      <div
+                        key={note.id}
+                        className="bg-slate-50 dark:bg-slate-800 rounded-lg p-3 border-l-4 border-indigo-500 shadow-sm"
+                      >
+                        <div className="flex items-start justify-between mb-2">
+                          <div className="flex-1">
+                            <div className="text-xs font-bold text-indigo-700 dark:text-indigo-400">
+                              {note.author_name}
+                            </div>
+                            <div className="text-xs text-slate-500 dark:text-slate-400">
+                              {note.createdAt.toLocaleDateString('en-US', { 
+                                month: 'short', 
+                                day: 'numeric',
+                                hour: 'numeric',
+                                minute: '2-digit'
+                              })}
+                            </div>
+                          </div>
+                          {note.created_by === user.id && (
+                            <button
+                              onClick={() => deleteBoardNote(note.id)}
+                              className="text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          )}
+                        </div>
+                        <div className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
+                          {note.content}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Toggle Notes Panel Button (when collapsed) */}
+          {!showNotesPanel && (
+            <button
+              onClick={() => setShowNotesPanel(true)}
+              className="fixed left-6 top-32 bg-indigo-600 hover:bg-indigo-700 text-white font-bold p-3 rounded-lg shadow-lg transition-all z-30"
+              title="Show Notes Panel"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </button>
+          )}
+
+          {/* Kanban Board */}
+          <div className="flex-1 overflow-x-auto">
+            <div className="inline-flex gap-4 pb-6" style={{ minWidth: '100%' }}>
+              {STAGES.map(stage => {
               const stageDeals = getDealsForStage(stage.id)
               return (
                 <div
@@ -916,6 +1271,8 @@ export default function Deals() {
             })}
           </div>
         </div>
+        </div>
+        {/* End of Main Content Area */}
 
         {/* Add Deal Modal */}
         {showAddModal && (
@@ -925,6 +1282,7 @@ export default function Deals() {
             title="Add New Deal"
             savedVendors={savedVendors}
             savedClients={savedClients}
+            saving={saving}
           />
         )}
 
@@ -935,6 +1293,8 @@ export default function Deals() {
             onClose={() => {
               setShowEditModal(false)
               setSelectedDeal(null)
+              setDealComments([])
+              setNewComment('')
             }}
             onSave={updateDeal}
             onDelete={deleteDeal}
@@ -942,6 +1302,14 @@ export default function Deals() {
             stages={STAGES}
             savedVendors={savedVendors}
             savedClients={savedClients}
+            dealComments={dealComments}
+            newComment={newComment}
+            setNewComment={setNewComment}
+            onAddComment={() => addDealComment(selectedDeal.id)}
+            onDeleteComment={deleteDealComment}
+            onFetchComments={() => fetchDealComments(selectedDeal.id)}
+            saving={saving}
+            deleting={deleting}
           />
         )}
 
@@ -992,7 +1360,24 @@ export default function Deals() {
   )
 }
 
-function DealModal({ deal, onClose, onSave, onDelete, title, stages, savedVendors = [], savedClients = [] }) {
+function DealModal({ 
+  deal, 
+  onClose, 
+  onSave, 
+  onDelete, 
+  title, 
+  stages, 
+  savedVendors = [], 
+  savedClients = [],
+  dealComments = [],
+  newComment = '',
+  setNewComment,
+  onAddComment,
+  onDeleteComment,
+  onFetchComments,
+  saving = false,
+  deleting = false
+}) {
   const [formData, setFormData] = useState(deal || {
     visionNumber: '',
     vendor: '',
@@ -1006,6 +1391,15 @@ function DealModal({ deal, onClose, onSave, onDelete, title, stages, savedVendor
   const [showClientDropdown, setShowClientDropdown] = useState(false)
   const [vendorSearch, setVendorSearch] = useState(deal?.vendor || '')
   const [clientSearch, setClientSearch] = useState(deal?.client || '')
+  const [postingComment, setPostingComment] = useState(false)
+
+  // Fetch comments when editing an existing deal
+  useEffect(() => {
+    if (deal?.id && onFetchComments) {
+      onFetchComments()
+    }
+  }, [deal?.id, onFetchComments])
+
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -1107,7 +1501,7 @@ function DealModal({ deal, onClose, onSave, onDelete, title, stages, savedVendor
             <input
               type="text"
               required={visionRequired}
-              value={formData.visionNumber}
+              value={formData.visionNumber || ''}
               onChange={(e) => setFormData({ ...formData, visionNumber: e.target.value })}
               className={`w-full rounded-lg border-2 ${
                 visionRequired && !formData.visionNumber 
@@ -1235,7 +1629,7 @@ function DealModal({ deal, onClose, onSave, onDelete, title, stages, savedVendor
               </svg>
               <input
                 type="url"
-                value={formData.folderLink}
+                value={formData.folderLink || ''}
                 onChange={(e) => setFormData({ ...formData, folderLink: e.target.value })}
                 className="w-full pl-12 pr-4 rounded-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-4 text-lg text-slate-900 dark:text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900 outline-none"
                 placeholder="https://drive.google.com/... or Dropbox/OneDrive link"
@@ -1246,19 +1640,110 @@ function DealModal({ deal, onClose, onSave, onDelete, title, stages, savedVendor
             </p>
           </div>
 
-          {/* Notes */}
-          <div>
-            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wide">
-              Notes & Follow-up Items
-            </label>
-            <textarea
-              value={formData.notes}
-              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              rows={5}
-              className="w-full rounded-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-4 text-lg text-slate-900 dark:text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900 outline-none resize-none"
-              placeholder="• Missing documents&#10;• Follow-up needed&#10;• Special conditions&#10;• Audit corrections needed"
-            />
-          </div>
+          {/* Comments Section */}
+          {deal?.id && (
+            <div>
+              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 uppercase tracking-wide">
+                💬 Comments & Notes
+              </label>
+              
+              {/* Add New Comment */}
+              <div className="mb-4">
+                <div className="flex gap-2">
+                  <textarea
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    rows={3}
+                    disabled={postingComment}
+                    className="flex-1 rounded-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-base text-slate-900 dark:text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900 outline-none resize-none disabled:opacity-50"
+                    placeholder="Add a comment or note..."
+                    onKeyDown={async (e) => {
+                      if (e.key === 'Enter' && e.metaKey && !postingComment) {
+                        setPostingComment(true)
+                        await onAddComment()
+                        setPostingComment(false)
+                      }
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      setPostingComment(true)
+                      await onAddComment()
+                      setPostingComment(false)
+                    }}
+                    disabled={!newComment.trim() || postingComment}
+                    className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:cursor-not-allowed text-white font-semibold transition-colors self-start flex items-center gap-2"
+                  >
+                    {postingComment && (
+                      <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    )}
+                    {postingComment ? 'Posting...' : 'Post'}
+                  </button>
+                </div>
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  💡 Tip: Press ⌘+Enter to post
+                </p>
+              </div>
+
+              {/* Comments List */}
+              <div className="space-y-3 max-h-96 overflow-y-auto">
+                {dealComments.length === 0 ? (
+                  <div className="text-center py-8 text-slate-400 dark:text-slate-500">
+                    <svg className="w-12 h-12 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    <p className="text-sm">No comments yet. Be the first to add one!</p>
+                  </div>
+                ) : (
+                  dealComments.map(comment => (
+                    <div 
+                      key={comment.id} 
+                      className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 border border-slate-200 dark:border-slate-700"
+                    >
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
+                            {comment.author_name?.charAt(0) || '?'}
+                          </div>
+                          <div>
+                            <p className="font-semibold text-sm text-slate-900 dark:text-white">
+                              {comment.author_name}
+                            </p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                              {comment.createdAt.toLocaleDateString('en-US', { 
+                                month: 'short', 
+                                day: 'numeric', 
+                                year: 'numeric',
+                                hour: 'numeric',
+                                minute: '2-digit'
+                              })}
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => onDeleteComment(comment.id)}
+                          className="text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                          title="Delete comment"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+                      <p className="text-slate-700 dark:text-slate-300 text-sm whitespace-pre-wrap">
+                        {comment.content}
+                      </p>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
         </form>
 
         {/* Modal Footer */}
@@ -1267,24 +1752,39 @@ function DealModal({ deal, onClose, onSave, onDelete, title, stages, savedVendor
             <button
               type="button"
               onClick={() => onDelete(deal.id)}
-              className="rounded-lg bg-red-600 hover:bg-red-700 px-6 py-3 text-lg font-bold text-white shadow-lg hover:shadow-xl transition-all"
+              disabled={deleting || saving}
+              className="rounded-lg bg-red-600 hover:bg-red-700 disabled:bg-red-400 disabled:cursor-not-allowed px-6 py-3 text-lg font-bold text-white shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
             >
-              Delete Deal
+              {deleting && (
+                <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              )}
+              {deleting ? 'Deleting...' : 'Delete Deal'}
             </button>
           )}
           <div className="flex-1"></div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-600 px-6 py-3 text-lg font-bold text-slate-900 dark:text-white shadow-lg hover:shadow-xl transition-all"
+            disabled={saving || deleting}
+            className="rounded-lg bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed px-6 py-3 text-lg font-bold text-slate-900 dark:text-white shadow-lg hover:shadow-xl transition-all"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
-            className="rounded-lg bg-blue-600 hover:bg-blue-700 px-8 py-3 text-lg font-bold text-white shadow-lg hover:shadow-xl transition-all"
+            disabled={saving || deleting}
+            className="rounded-lg bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed px-8 py-3 text-lg font-bold text-white shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
           >
-            Save Deal
+            {saving && (
+              <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            )}
+            {saving ? 'Saving...' : 'Save Deal'}
           </button>
         </div>
       </div>
