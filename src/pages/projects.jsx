@@ -1,265 +1,194 @@
-import Image from 'next/image'
+import { useEffect, useMemo, useState } from 'react'
 import Head from 'next/head'
+import Image from 'next/image'
+import Link from 'next/link'
+import clsx from 'clsx'
+import {
+  SiDjango,
+  SiFlutter,
+  SiGooglechrome,
+  SiJava,
+  SiNodedotjs,
+  SiOpenai,
+  SiPython,
+  SiReact,
+  SiSwift,
+  SiTypescript,
+} from 'react-icons/si'
+import { HiOutlineCodeBracketSquare } from 'react-icons/hi2'
+import { FiServer } from 'react-icons/fi'
+import { LuBot, LuCalendarDays } from 'react-icons/lu'
+import { MdPhoneIphone } from 'react-icons/md'
+
 import { Card } from '@/components/Card'
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
+import { GitHubIcon } from '@/components/SocialIcons'
+import { getProjectsData } from '@/lib/projects'
 
-// Import icons from react-icons
-import { 
-  FaReact, FaJava, FaPython, FaNodeJs, FaMobile, 
-  FaCode, FaServer, FaCalendarAlt 
-} from 'react-icons/fa'
-import { 
-  SiFlutter, SiDjango, SiTypescript, 
-  SiOpenai, SiGooglechrome, SiSwift, 
-} from 'react-icons/si'
-import { GiArtificialIntelligence } from 'react-icons/gi'
-
-const projects = [
-  {
-    name: 'Applify AI',
-    description:
-      'AI-Powered Resume Tailoring Platform using TypeScript, Next.js, and OpenAI that optimizes resumes for ATS systems and human recruiters. Features include secure authentication, intelligent content generation, and subscription-based premium features.',
-    link: { href: 'https://applify-ai.com/', label: 'applify-ai.com' },
-    github: 'https://github.com/kianis4/applify-ai',
-    logo: '/ApplifyLogo.svg', // Updated to use public directory path
-    timeframe: 'Feb 2025 - Present',
-    tech: ['TypeScript', 'Next.js', 'MongoDB', 'OpenAI', 'Stripe'],
-    featured: true,
-  },
-  {
-    name: 'SKompXcel',
-    description:
-      'Academic Excellence Platform and mentorship service supporting 20+ Computer Science students. Built with Next.js and TypeScript, featuring responsive UI with Tailwind CSS and scalable hosting on Google Cloud.',
-    link: { href: 'https://skompxcel.com/', label: 'skompxcel.com' },
-    logo: '/SKomp.svg', // Updated to use public directory path
-    timeframe: 'Jan 2024 - Present',
-    tech: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Google Cloud'],
-    featured: true,
-  },
-  {
-    name: 'Interactive Fitness Portfolio',
-    description:
-      'Personal portfolio platform showcasing fitness achievements using Next.js and Tailwind CSS. Features Instagram and Spotify API integrations, optimized performance through SSR, and reusable React components.',
-    link: { href: 'https://suleyman.io/', label: 'Personal Portfolio' },
-    logo: <FaReact className="text-blue-500" />, // React icon
-    timeframe: 'Oct 2024 - May 2025',
-    tech: ['Next.js', 'React', 'Tailwind CSS', 'API Integration'],
-  },
-  {
-    name: 'Full Stack Recipe Management',
-    description: 
-      'Comprehensive recipe management system with advanced search features, responsive UI, and flexible data storage. Built with React frontend and Django REST Framework backend to handle 300+ ingredients.',
-    link: { href: 'https://github.com/kianis4/RecipeShack', label: 'GitHub' },
-    logo: <SiDjango className="text-green-700" />, // Django icon
-    timeframe: 'Mar 2023 - Apr 2025',
-    tech: ['React', 'Django', 'MongoDB', 'Chakra UI'],
-  },
-  {
-    name: 'Workout Tracking App',
-    description:
-      'Cross-platform application for tracking progressive overload in weightlifting. Built with Flutter using BLoC pattern for state management, Firebase for real-time sync, and automated testing with GitHub Actions.',
-    link: { href: 'https://github.com/kianis4/workout_tracker', label: 'GitHub' },
-    logo: <SiFlutter className="text-blue-400" />, // Flutter icon
-    timeframe: 'Apr 2024 - Apr 2025',
-    tech: ['Flutter', 'Dart', 'Firebase', 'BLoC'],
-  },
-  {
-    name: 'Interactive Portfolio Platform',
-    description:
-      'Modern personal portfolio with advanced GSAP animations, responsive SASS-based design, serverless contact form with EmailJS, and interactive map integrations.',
-    link: { href: 'https://github.com/kianis4/Personal-CV', label: 'GitHub' },
-    logo: <FaCode className="text-purple-600" />, // Code icon
-    timeframe: 'Feb 2023 - Apr 2025',
-    tech: ['React', 'GSAP', 'SASS', 'EmailJS'],
-  },
-  {
-    name: 'Portfolio Backend API',
-    description:
-      'Comprehensive backend API for personal portfolio with social media integration. Features JWT authentication, MongoDB with GridFS, and external API integrations for Instagram and Chess.com.',
-    link: { href: 'https://github.com/kianis4/Personal-CV-Backend', label: 'GitHub' },
-    logo: <FaNodeJs className="text-gray-600" />, // Server icon
-    timeframe: 'May 2023 - Apr 2025',
-    tech: ['Node.js', 'Express.js', 'MongoDB', 'JWT'],
-  },
-  {
-    name: 'Crime Analysis System',
-    description:
-      'Desktop application for analyzing NYC crime data across four million records. Implements spatial data analysis, Dijkstra\'s algorithm for safest paths, and LocationIQ API integration.',
-    link: { href: 'https://github.com/kianis4/Saftey-Net', label: 'GitHub' },
-    logo: <FaJava className="text-blue-700" />, // Desktop icon
-    timeframe: 'Mar 2023 - Apr 2025',
-    tech: ['Java SE 10', 'OpenCSV', 'Google Gson', 'LocationIQ API'],
-  },
-  {
-    name: 'AI Course Chatbot',
-    description:
-      'Knowledge-based chatbot for answering AI course questions. Implements rule-based inference engine with backward chaining and structured knowledge representation.',
-    link: { href: 'https://github.com/kianis4/AI-31-Chatbot', label: 'GitHub' },
-    logo: <GiArtificialIntelligence className="text-teal-600" />, // AI icon
-    timeframe: 'Mar 2025',
-    tech: ['Python', 'Rule-Based Inference', 'CLI'],
-  },
-  {
-    name: 'Load Balancing System',
-    description:
-      'Robust load balancer distributing client requests across multiple backend servers with health checks and multiple algorithms. Implements multi-threading for handling concurrent connections.',
-    link: { href: 'https://github.com/kianis4/load-balancer', label: 'GitHub' },
-    logo: <FaServer className="text-red-500" />, // Server icon with different color
-    timeframe: 'Feb 2025',
-    tech: ['Python 3', 'Sockets', 'Multi-threading'],
-  },
-  {
-    name: 'AI Coding Interview Platform',
-    description:
-      'Web platform simulating coding interviews with generative AI. Features OpenAI GPT-4 integration, Docker-based code execution, and interactive chat interface.',
-    link: { href: 'https://github.com/kianis4/SKompXcel-AI-Code-Mentor', label: 'GitHub' },
-    logo: <SiOpenai className="text-green-500" />, // OpenAI icon
-    timeframe: 'Feb 2025',
-    tech: ['TypeScript', 'Next.js', 'Node.js', 'OpenAI GPT-4'],
-  },
-  {
-    name: 'Calendar Application',
-    description:
-      'Personalized calendar app for daily notes and reflections. Built with Next.js, TypeScript, and React Calendar for an interactive experience.',
-    link: { href: 'https://github.com/kianis4/birthday-calendar', label: 'GitHub' },
-    logo: <FaCalendarAlt className="text-indigo-600" />, // Calendar icon
-    timeframe: 'Dec 2024',
-    tech: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Vercel'],
-  },
-  {
-    name: 'iOS Overload Management',
-    description:
-      'iOS application for system load management and optimization using MVVM architecture, Alamofire for network communication, and Core Data for local persistence.',
-    link: { href: 'https://github.com/kianis4/overload-pro-ios', label: 'GitHub' },
-    logo: <SiSwift className="text-orange-500" />, // Swift icon
-    timeframe: 'Feb 2025',
-    tech: ['Swift', 'UIKit', 'Core Data', 'MVVM'],
-  },
-  {
-    name: 'Bigram Language Model',
-    description:
-      'Character-level language model using PyTorch. Implements tensor operations for training, sampling mechanisms for text generation, and negative log likelihood for loss evaluation.',
-    link: { href: 'https://github.com/kianis4/torch-bigram-language-model', label: 'GitHub' },
-    logo: <FaPython className="text-yellow-600" />, // Python icon
-    timeframe: 'Jan 2025',
-    tech: ['PyTorch', 'Tensor Operations', 'Model Training'],
-  },
-  {
-    name: 'Neural Network Framework',
-    description:
-      'Educational framework demystifying neural network principles. Implements core components for automatic differentiation and gradient computation, recreating Micrograd functionality.',
-    link: { href: 'https://github.com/kianis4/-neural-networks-zero-to-hero', label: 'GitHub' },
-    logo: <GiArtificialIntelligence className="text-blue-600" />, // AI icon different color
-    timeframe: 'Jan 2025',
-    tech: ['Python', 'Jupyter Notebook', 'Micrograd'],
-  },
-  {
-    name: 'Fitness Tracking App',
-    description:
-      'Mobile app for tracking progressive overload in fitness routines. Built with Swift and SwiftUI, using Core Data for persistent storage and Combine for async data handling.',
-    link: { href: 'https://github.com/kianis4/ProgressiveOverloadApp', label: 'GitHub' },
-    logo: <FaMobile className="text-red-600" />, // Fitness icon
-    timeframe: 'Oct 2024',
-    tech: ['Swift', 'SwiftUI', 'Core Data', 'Combine'],
-  },
-  {
-    name: 'E&S Solns.',
-    description:
-      'Co-Founder and Lead Developer - Automation and software solutions for small businesses. Implementing digital transformation and custom workflow solutions.',
-    link: { href: 'https://www.es-soln.com/', label: 'es-soln.com' },
-    logo: <SiTypescript className="text-purple-500" />, // Services icon
-    timeframe: '2023 - Present',
-    tech: ['Web Development', 'Automation', 'Consulting'],
-  },
-  {
-    name: 'Evergreen Renos',
-    description: 
-      'Web application streamlining operations for a renovation business in the GTA, enhancing customer experience and improving project management efficiency.',
-    link: { href: 'https://www.evergreenrenos.ca/', label: 'evergreenrenos.ca' },
-    logo: <SiGooglechrome className="text-green-600" />, // Web icon
-    timeframe: '2023',
-    tech: ['Web Development', 'CMS', 'Project Management'],
-  },
+const VIEW_FILTERS = [
+  { label: 'All work', value: 'all' },
+  { label: 'Open source', value: 'open-source' },
+  { label: 'Client work', value: 'client' },
 ]
 
-function LinkIcon(props) {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" {...props}>
-      <path
-        d="M15.712 11.823a.75.75 0 1 0 1.06 1.06l-1.06-1.06Zm-4.95 1.768a.75.75 0 0 0 1.06-1.06l-1.06 1.06Zm-2.475-1.414a.75.75 0 1 0-1.06-1.06l1.06 1.06Zm4.95-1.768a.75.75 0 1 0-1.06 1.06l1.06-1.06Zm3.359.53-.884.884 1.06 1.06.885-.883-1.061-1.06Zm-4.95-2.12 1.414-1.415L12 6.344l-1.415 1.413 1.061 1.061Zm0 3.535a2.5 2.5 0 0 1 0-3.536l-1.06-1.06a4 4 0 0 0 0 5.656l1.06-1.06Zm4.95-4.95a2.5 2.5 0 0 1 0 3.535L17.656 12a4 4 0 0 0 0-5.657l-1.06 1.06Zm1.06-1.06a4 4 0 0 0-5.656 0l1.06 1.06a2.5 2.5 0 0 1 3.536 0l1.06-1.06Zm-7.07 7.07.176.177 1.06-1.06-.176-.177-1.06 1.06Zm-3.183-.353.884-.884-1.06-1.06-.884.883 1.06 1.06Zm4.95 2.121-1.414 1.414 1.06 1.06 1.415-1.413-1.06-1.061Zm0-3.536a2.5 2.5 0 0 1 0 3.536l1.06 1.06a4 4 0 0 0 0-5.656l-1.06 1.06Zm-4.95 4.95a2.5 2.5 0 0 1 0-3.535L6.344 12a4 4 0 0 0 0 5.656l1.06-1.06Zm-1.06 1.06a4 4 0 0 0 5.657 0l-1.061-1.06a2.5 2.5 0 0 1-3.535 0l-1.061 1.06Zm7.07-7.07-.176-.177-1.06 1.06.176.178 1.06-1.061Z"
-        fill="currentColor"
-      />
-    </svg>
-  )
+const SORT_OPTIONS = [
+  { label: 'Recently updated', value: 'recent' },
+  { label: 'Most popular', value: 'popular' },
+  { label: 'A → Z', value: 'alphabetical' },
+]
+
+const PROJECT_ICONS = {
+  ai: LuBot,
+  calendar: LuCalendarDays,
+  chrome: SiGooglechrome,
+  code: HiOutlineCodeBracketSquare,
+  django: SiDjango,
+  flutter: SiFlutter,
+  java: SiJava,
+  mobile: MdPhoneIphone,
+  node: SiNodedotjs,
+  openai: SiOpenai,
+  python: SiPython,
+  react: SiReact,
+  server: FiServer,
+  swift: SiSwift,
+  typescript: SiTypescript,
 }
+export default function Projects({ projects = [] }) {
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedTech, setSelectedTech] = useState(null)
+  const [sortOption, setSortOption] = useState('recent')
+  const [viewFilter, setViewFilter] = useState('all')
+  const [showBackToTop, setShowBackToTop] = useState(false)
 
-function GitHubIcon(props) {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" {...props}>
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-        fill="currentColor"
-      />
-    </svg>
-  )
-}
-
-export default function Projects() {
-  // Separate featured projects from regular projects
-  const featuredProjects = projects.filter(project => project.featured);
-  const regularProjects = projects.filter(project => !project.featured);
-
-  // Add state for search term
-  const [searchTerm, setSearchTerm] = useState('');
-
-  // Use search term to filter projects
-  const filteredProjects = regularProjects.filter(project => {
-    const techMatch = project.tech.some(tech => 
-      tech.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    
-    const descriptionMatch = project.description
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    
-    const nameMatch = project.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    
-    return techMatch || descriptionMatch || nameMatch || searchTerm === '';
-  });
-
-  // Add state for back to top button
-  const [showBackToTop, setShowBackToTop] = useState(false);
-  
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 500) {
-        setShowBackToTop(true);
-      } else {
-        setShowBackToTop(false);
-      }
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-  
+      setShowBackToTop(window.scrollY > 500)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
-    });
-  };
+      behavior: 'smooth',
+    })
+  }
 
-  // Get all unique technologies across projects
-  const allTechnologies = [...new Set(
-    projects.flatMap(project => project.tech)
-  )].sort();
+  const normalizedProjects = useMemo(
+    () =>
+      projects.map((project) => ({
+        ...project,
+        tech: project.tech || [],
+        badges: project.badges || [],
+      })),
+    [projects]
+  )
+
+  const featuredProjects = useMemo(
+    () =>
+      normalizedProjects
+        .filter((project) => project.featured)
+        .sort((a, b) => (a.priority ?? 99) - (b.priority ?? 99)),
+    [normalizedProjects]
+  )
+
+  const regularProjects = useMemo(
+    () => normalizedProjects.filter((project) => !project.featured),
+    [normalizedProjects]
+  )
+
+  const productionProjects = useMemo(() => {
+    return normalizedProjects
+      .filter((project) => {
+        if (!project.link?.href) return false
+        const href = project.link.href.toLowerCase()
+        return !href.includes('github.com')
+      })
+      .slice(0, 6)
+  }, [normalizedProjects])
+
+  const techCounts = useMemo(() => {
+    const counts = new Map()
+
+    normalizedProjects.forEach((project) => {
+      project.tech.forEach((tech) => {
+        if (!tech) return
+        counts.set(tech, (counts.get(tech) || 0) + 1)
+      })
+    })
+
+    return Array.from(counts.entries()).sort((a, b) => b[1] - a[1])
+  }, [normalizedProjects])
+
+  const topTechFilters = techCounts.slice(0, 8)
+
+  const metrics = useMemo(() => {
+    const totalProjects = normalizedProjects.length
+    const openSourceProjects = normalizedProjects.filter(
+      (project) => project.source === 'github' || Boolean(project.github)
+    ).length
+    const totalStars = normalizedProjects.reduce(
+      (sum, project) => sum + (project.stats?.stars || 0),
+      0
+    )
+    const latestUpdate = normalizedProjects
+      .filter((project) => project.updatedAt)
+      .sort(
+        (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+      )[0]
+
+    return {
+      totalProjects,
+      openSourceProjects,
+      totalStars,
+      uniqueTech: techCounts.length,
+      latestUpdate,
+    }
+  }, [normalizedProjects, techCounts])
+
+  const filteredProjects = useMemo(() => {
+    let collection = [...regularProjects]
+
+    if (viewFilter === 'open-source') {
+      collection = collection.filter(
+        (project) => project.source === 'github' || Boolean(project.github)
+      )
+    }
+
+    if (viewFilter === 'client') {
+      collection = collection.filter((project) => project.source === 'custom')
+    }
+
+    if (selectedTech) {
+      const target = selectedTech.toLowerCase()
+      collection = collection.filter((project) =>
+        project.tech.some((tech) => tech.toLowerCase() === target)
+      )
+    }
+
+    if (searchTerm.trim()) {
+      const query = searchTerm.toLowerCase()
+      collection = collection.filter((project) => {
+        const matchesName = project.name.toLowerCase().includes(query)
+        const matchesDescription = project.description
+          ?.toLowerCase()
+          .includes(query)
+        const matchesTech = project.tech.some((tech) =>
+          tech.toLowerCase().includes(query)
+        )
+        const matchesBadges = project.badges.some((badge) =>
+          badge.toLowerCase().includes(query)
+        )
+
+        return matchesName || matchesDescription || matchesTech || matchesBadges
+      })
+    }
+
+    return sortProjects(collection, sortOption)
+  }, [regularProjects, viewFilter, selectedTech, searchTerm, sortOption])
 
   return (
     <>
@@ -271,290 +200,643 @@ export default function Projects() {
         />
       </Head>
       <SimpleLayout
-        title="Things I've made trying to put my dent in the universe."
-        intro="I've worked on tons of little projects over the years but these are the ones that I'm most proud of. Many of them are open-source, so if you see something that piques your interest, check out the code and contribute if you have ideas for how it can be improved."
+        title="Projects that grow with me."
+        intro="Every public repo, private deployment, and retained client build rolls onto this page automatically. Pick a stack, scan featured launches, or dive into the open-source work that shows how I ship from prototype to production."
       >
-        {/* Add project summary */}
-        <div className="mb-12 flex flex-wrap justify-center gap-8 text-center">
-          <div className="px-8 py-4 rounded-lg bg-zinc-50 dark:bg-zinc-800/50">
-            <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">{projects.length}</p>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">Total Projects</p>
-          </div>
-          
-          <div className="px-8 py-4 rounded-lg bg-zinc-50 dark:bg-zinc-800/50">
-            <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
-              {projects.filter(p => p.tech.includes('Next.js')).length}
-            </p>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">Next.js Projects</p>
-          </div>
-          
-          <div className="px-8 py-4 rounded-lg bg-zinc-50 dark:bg-zinc-800/50">
-            <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
-              {projects.filter(p => p.github).length}
-            </p>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">Open Source</p>
-          </div>
-        </div>
-        
-        {/* Featured Projects Section */}
-        {featuredProjects.length > 0 && (
-          <>
-            <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100 mb-8">Featured Projects</h2>
-            <ul
-              role="list"
-              className="grid grid-cols-1 gap-x-12 gap-y-16 sm:grid-cols-2 mb-16"
-            >
-              {featuredProjects.map((project) => (
-                <Card 
-                  as="li" 
-                  key={project.name} 
-                  className="border-2 border-blue-500/20 dark:border-blue-500/30 shadow-lg p-6 sm:p-8" // Added padding here
+        <section className="mb-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <MetricCard
+            label="Projects"
+            value={metrics.totalProjects}
+            description="Client + open source"
+          />
+          <MetricCard
+            label="Open source"
+            value={metrics.openSourceProjects}
+            description={`${formatNumber(metrics.totalStars)} total stars`}
+          />
+          <MetricCard
+            label="Tech stack"
+            value={metrics.uniqueTech}
+            description="Unique technologies"
+          />
+          <MetricCard
+            label="Latest ship"
+            value={
+              metrics.latestUpdate
+                ? formatRelativeTime(metrics.latestUpdate.updatedAt)
+                : '—'
+            }
+            description={metrics.latestUpdate?.name || 'Auto-updated from GitHub'}
+          />
+        </section>
+
+        <section className="mb-10 space-y-6">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
+            <div className="relative flex-1">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg
+                  className="h-4 w-4 text-zinc-400"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  {/* Improve the card header layout */}
-                  <div className="flex flex-col">
-                    {/* Logo section with proper spacing */}
-                    <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0 mb-6">
-                      {typeof project.logo === 'string' ? (
-                        <Image
-                          src={project.logo}
-                          alt=""
-                          className="h-8 w-8"
-                          width={32}
-                          height={32}
-                          unoptimized
-                        />
-                      ) : (
-                        <div className="h-8 w-8 flex items-center justify-center text-2xl">
-                          {project.logo}
-                        </div>
-                      )}
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                  />
+                </svg>
+              </div>
+              <input
+                type="search"
+                className="block w-full rounded-lg border border-zinc-300 bg-zinc-50 py-3 pl-10 pr-4 text-sm text-zinc-900 focus:border-blue-500 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+                placeholder="Search by name, stack, or problem space"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-blue-600 px-3 py-1 text-xs font-medium text-white"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <select
+                className="rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                value={sortOption}
+                onChange={(event) => setSortOption(event.target.value)}
+              >
+                {SORT_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+
+              <div className="inline-flex rounded-full border border-zinc-200 bg-white p-1 dark:border-zinc-700 dark:bg-zinc-800">
+                {VIEW_FILTERS.map((filter) => (
+                  <button
+                    key={filter.value}
+                    onClick={() => setViewFilter(filter.value)}
+                    className={clsx(
+                      'rounded-full px-3 py-1 text-xs font-medium transition',
+                      viewFilter === filter.value
+                        ? 'bg-blue-600 text-white'
+                        : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-300'
+                    )}
+                  >
+                    {filter.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="text-xs uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+              Popular stacks
+            </p>
+            {topTechFilters.map(([tech, count]) => (
+              <button
+                key={tech}
+                onClick={() =>
+                  setSelectedTech((current) => (current === tech ? null : tech))
+                }
+                className={clsx(
+                  'rounded-full border px-3 py-1 text-xs font-medium transition',
+                  selectedTech === tech
+                    ? 'border-blue-500 bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                    : 'border-zinc-200 text-zinc-600 hover:border-blue-400 hover:text-blue-500 dark:border-zinc-700 dark:text-zinc-300'
+                )}
+              >
+                {tech}
+                <span className="ml-1 text-[0.65rem] text-zinc-400">×{count}</span>
+              </button>
+            ))}
+            {selectedTech && (
+              <button
+                onClick={() => setSelectedTech(null)}
+                className="text-xs font-medium text-blue-600 underline underline-offset-4"
+              >
+                Clear tech filter
+              </button>
+            )}
+          </div>
+        </section>
+
+        {featuredProjects.length > 0 && (
+          <section className="mb-16">
+            <h2 className="mb-6 text-xl font-bold text-zinc-800 dark:text-zinc-100">
+              Featured case studies
+            </h2>
+            <div className="grid gap-6 lg:grid-cols-2">
+              {featuredProjects.map((project) => (
+                <article
+                  key={project.name}
+                  className="relative overflow-hidden rounded-3xl border border-blue-500/20 bg-gradient-to-br from-blue-50 via-white to-white p-6 shadow-lg dark:from-blue-900/20 dark:via-zinc-900 dark:to-zinc-900"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md ring-1 ring-blue-100 dark:bg-zinc-900">
+                        <ProjectLogo logo={project.logo} name={project.name} />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
+                          <Card.Link href={project.link.href}>{project.name}</Card.Link>
+                        </h3>
+                        <p className="text-sm text-blue-600 dark:text-blue-300">
+                          {project.timeframe}
+                        </p>
+                      </div>
                     </div>
-                    
-                    {/* Project title and timeframe with better spacing */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
-                      <h2 className="text-base font-semibold text-zinc-800 dark:text-zinc-100">
-                        <Card.Link href={project.link.href}>{project.name}</Card.Link>
-                      </h2>
-                      <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10 dark:bg-blue-400/10 dark:text-blue-400 dark:ring-blue-400/30 mt-1 sm:mt-0">
-                        {project.timeframe}
-                      </span>
+                    <div className="flex gap-2">
+                      {project.badges.map((badge) => (
+                        <span
+                          key={badge}
+                          className="rounded-full bg-blue-600/10 px-3 py-1 text-xs font-medium text-blue-700 dark:text-blue-300"
+                        >
+                          {badge}
+                        </span>
+                      ))}
                     </div>
                   </div>
-                  
-                  <Card.Description>{project.description}</Card.Description>
-                  
-                  {/* Tech Tags */}
+                  <p className="mt-4 text-sm text-zinc-700 dark:text-zinc-300">
+                    {project.description}
+                  </p>
                   <div className="mt-4 flex flex-wrap gap-2">
                     {project.tech.map((tech) => (
-                      <span 
+                      <span
                         key={tech}
-                        className="inline-flex items-center rounded-md bg-zinc-50 px-2 py-1 text-xs font-medium text-zinc-700 ring-1 ring-inset ring-zinc-900/10 dark:bg-zinc-800/40 dark:text-zinc-300 dark:ring-zinc-700"
+                        className="rounded-md bg-white/70 px-2 py-1 text-xs font-medium text-zinc-700 ring-1 ring-white/50 dark:bg-zinc-800/60 dark:text-zinc-200"
                       >
                         {tech}
                       </span>
                     ))}
                   </div>
-                  
-                  <div className="relative z-10 mt-6 flex items-center gap-4">
-                    <p className="flex text-sm font-medium text-zinc-400 transition group-hover:text-teal-500 dark:text-zinc-200">
-                      <LinkIcon className="h-6 w-6 flex-none" />
-                      <span className="ml-2">{project.link.label}</span>
-                    </p>
-                    
+                  <div className="mt-6 flex flex-wrap items-center gap-6 text-sm font-medium text-zinc-500 dark:text-zinc-300">
+                    <a
+                      href={project.link.href}
+                      className="inline-flex items-center gap-2 hover:text-blue-600"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <LinkIcon className="h-5 w-5" />
+                      {project.link.label}
+                    </a>
                     {project.github && (
-                      <a 
-                        href={project.github} 
-                        className="flex text-sm font-medium text-zinc-400 transition hover:text-zinc-800 dark:text-zinc-200 dark:hover:text-zinc-50"
+                      <a
+                        href={project.github}
+                        className="inline-flex items-center gap-2 hover:text-blue-600"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        <GitHubIcon className="h-6 w-6 flex-none" />
-                        <span className="ml-2">GitHub</span>
+                        <GitHubIcon className="h-5 w-5" />
+                        GitHub
                       </a>
                     )}
                   </div>
-                </Card>
+                </article>
               ))}
-            </ul>
-          </>
-        )}
-        
-        {/* Replace the existing category filter with this search-based filter */}
-        <div className="mb-8">
-          <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100 mb-4">More Projects</h2>
-          
-          {/* Search box */}
-          <div className="relative mb-6">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-              </svg>
             </div>
-            <input
-              type="search"
-              className="block w-full p-4 pl-10 text-sm border rounded-lg bg-zinc-50 border-zinc-300 text-zinc-900 focus:ring-blue-500 focus:border-blue-500 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Search projects by name, tech, or description..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            {searchTerm && (
-              <button 
-                onClick={() => setSearchTerm('')}
-                className="absolute right-2.5 bottom-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg text-sm px-4 py-2"
-              >
-                Clear
-              </button>
-            )}
-          </div>
-          
-          {/* Popular technologies pills (optional) */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 mr-2 self-center">Popular:</p>
-            {allTechnologies.slice(0, 5).map(tech => (
-              <button
-                key={tech}
-                onClick={() => setSearchTerm(tech)}
-                className="px-3 py-1.5 text-sm font-medium rounded-md bg-zinc-100 text-zinc-800 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700 transition"
-              >
-                {tech}
-              </button>
-            ))}
-          </div>
-        </div>
-        
-        {/* Search results count */}
-        <div className="mb-6 text-sm text-zinc-500 dark:text-zinc-400">
-          {searchTerm ? (
-            <p>Found {filteredProjects.length} project{filteredProjects.length !== 1 ? 's' : ''} matching &ldquo;{searchTerm}&rdquo;</p>
+          </section>
+        )}
+
+        {productionProjects.length > 0 && (
+          <section className="mb-16">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">
+                Live production launches
+              </h2>
+              <p className="text-xs uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                Auto-synced from GitHub + client updates
+              </p>
+            </div>
+            <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-4">
+              {productionProjects.map((project) => (
+                <article
+                  key={`${project.name}-production`}
+                  className="min-w-[260px] flex-1 rounded-2xl border border-zinc-100 bg-white/80 p-4 shadow-sm backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/80"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs uppercase tracking-wide text-blue-500 dark:text-blue-300">
+                        {project.visibility === 'private' ? 'Private launch' : 'Public launch'}
+                      </p>
+                      <h3 className="text-base font-semibold text-zinc-900 dark:text-white">
+                        {project.name}
+                      </h3>
+                    </div>
+                    <LinkIcon className="h-5 w-5 text-blue-500" />
+                  </div>
+                  <p className="mt-2 line-clamp-2 text-sm text-zinc-600 dark:text-zinc-400">
+                    {project.description}
+                  </p>
+                  <div className="mt-4 flex flex-wrap gap-2 text-xs text-zinc-500 dark:text-zinc-400">
+                    {project.tech.slice(0, 3).map((tech) => (
+                      <span key={tech} className="rounded-full bg-zinc-100 px-2 py-0.5 dark:bg-zinc-800">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                  <a
+                    href={project.link.href}
+                    className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-blue-600"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Visit {project.link.label}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="h-4 w-4"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75 6.75 17.25" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75h9v9" />
+                    </svg>
+                  </a>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <section className="mb-4 flex items-center justify-between text-sm text-zinc-500 dark:text-zinc-400">
+          {searchTerm || selectedTech || viewFilter !== 'all' ? (
+            <p>
+              Showing {filteredProjects.length} project
+              {filteredProjects.length !== 1 ? 's' : ''} that match your filters
+            </p>
           ) : (
-            <p>Showing all {regularProjects.length} projects</p>
+            <p>Showing all {filteredProjects.length} projects</p>
           )}
-        </div>
-        
-        {/* Use filtered projects instead */}
+        </section>
+
         <ul
           role="list"
-          className="grid grid-cols-1 gap-x-12 gap-y-16 sm:grid-cols-2 lg:grid-cols-3"
+          className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3"
         >
           {filteredProjects.map((project) => (
-            <Card 
-              as="li" 
-              key={project.name} 
-              className="group hover:shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 dark:hover:border-zinc-600"
+            <Card
+              as="li"
+              key={project.name}
+              className="group border border-transparent transition hover:-translate-y-1 hover:border-zinc-200 hover:shadow-xl dark:hover:border-zinc-700"
             >
-              {/* Logo with hover effect */}
-              <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0 group-hover:scale-110 transition-transform duration-300">
-                {typeof project.logo === 'string' ? (
-                  <Image
-                    src={project.logo}
-                    alt=""
-                    className="h-8 w-8"
-                    width={32}
-                    height={32}
-                    unoptimized
-                  />
-                ) : (
-                  <div className="h-8 w-8 flex items-center justify-center text-2xl">
-                    {project.logo}
-                  </div>
-                )}
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md ring-1 ring-zinc-100 dark:bg-zinc-900 dark:ring-zinc-800">
+                <ProjectLogo logo={project.logo} name={project.name} />
               </div>
-              
-              {/* Project header with improved hierarchy */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between mt-6">
-                <h2 className="text-base font-semibold text-zinc-800 dark:text-zinc-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                  <Card.Link href={project.link.href}>{project.name}</Card.Link>
-                </h2>
-                <span className="inline-flex items-center rounded-md bg-zinc-50 px-2 py-1 text-xs font-medium text-zinc-600 ring-1 ring-inset ring-zinc-500/10 dark:bg-zinc-700/40 dark:text-zinc-300 dark:ring-zinc-700 mt-1 sm:mt-0">
-                  {project.timeframe}
-                </span>
+              <div className="mt-6 flex items-start justify-between">
+                <div>
+                  <h3 className="text-base font-semibold text-zinc-800 transition group-hover:text-blue-600 dark:text-zinc-100">
+                    <Card.Link href={project.link.href}>{project.name}</Card.Link>
+                  </h3>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400">{project.timeframe}</p>
+                </div>
+                <div className="flex flex-col items-end gap-1">
+                  {project.badges.slice(0, 1).map((badge) => (
+                    <span
+                      key={badge}
+                      className="rounded-full bg-zinc-100 px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide text-zinc-500 dark:bg-zinc-800 dark:text-zinc-300"
+                    >
+                      {badge}
+                    </span>
+                  ))}
+                  {project.visibility === 'private' && (
+                    <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[0.6rem] font-semibold uppercase tracking-wide text-amber-700 dark:bg-amber-500/20 dark:text-amber-300">
+                      Private build
+                    </span>
+                  )}
+                  {project.source === 'custom' && (
+                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[0.6rem] font-semibold uppercase tracking-wide text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300">
+                      Client work
+                    </span>
+                  )}
+                </div>
               </div>
-              
               <Card.Description>{project.description}</Card.Description>
-              
-              {/* Tech Tags */}
               <div className="mt-4 flex flex-wrap gap-2">
                 {project.tech.map((tech) => (
-                  <span 
+                  <span
                     key={tech}
-                    className="inline-flex items-center rounded-md bg-zinc-50 px-2 py-1 text-xs font-medium text-zinc-600 ring-1 ring-inset ring-zinc-500/10 dark:bg-zinc-800/40 dark:text-zinc-300 dark:ring-zinc-700"
+                    className="rounded-md bg-zinc-50 px-2 py-1 text-xs font-medium text-zinc-600 ring-1 ring-zinc-100 dark:bg-zinc-800 dark:text-zinc-300 dark:ring-zinc-700"
                   >
                     {tech}
                   </span>
                 ))}
               </div>
-              
-              <div className="relative z-10 mt-6 flex items-center gap-4">
-                <p className="flex text-sm font-medium text-zinc-400 transition group-hover:text-teal-500 dark:text-zinc-200">
-                  <LinkIcon className="h-6 w-6 flex-none" />
-                  <span className="ml-2">{project.link.label}</span>
-                </p>
-                
+              <div className="mt-6 flex flex-wrap items-center gap-4 text-xs text-zinc-500 dark:text-zinc-400">
+                <div className="flex items-center gap-1">⭐ {project.stats?.stars ?? 0}</div>
+                <div className="flex items-center gap-1">🍴 {project.stats?.forks ?? 0}</div>
+                <div className="flex items-center gap-1">⏱ {formatMonthYear(project.updatedAt)}</div>
+              </div>
+              <div className="mt-4 flex items-center gap-4 text-sm font-medium text-zinc-500 dark:text-zinc-400">
+                <a
+                  href={project.link.href}
+                  className="inline-flex items-center gap-2 hover:text-blue-600"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <LinkIcon className="h-5 w-5" />
+                  {project.link.label}
+                </a>
                 {project.github && (
-                  <a 
-                    href={project.github} 
-                    className="flex text-sm font-medium text-zinc-400 transition hover:text-zinc-800 dark:text-zinc-200 dark:hover:text-zinc-50"
+                  <a
+                    href={project.github}
+                    className="inline-flex items-center gap-2 hover:text-blue-600"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <GitHubIcon className="h-6 w-6 flex-none" />
-                    <span className="ml-2">GitHub</span>
+                    <GitHubIcon className="h-5 w-5" />
+                    GitHub
                   </a>
                 )}
               </div>
             </Card>
           ))}
         </ul>
-        
-        {/* Show message when no projects match filter */}
+
         {filteredProjects.length === 0 && (
-          <div className="text-center py-12">
+          <div className="py-12 text-center">
             <p className="text-zinc-600 dark:text-zinc-400">
-              No projects found matching the selected filter.
+              No projects found. Try a different stack or reset your filters.
             </p>
             <button
-              onClick={() => setSearchTerm('')}
-              className="mt-4 px-4 py-2 rounded-md bg-blue-600 text-white font-medium hover:bg-blue-700 transition"
+              onClick={() => {
+                setSearchTerm('')
+                setSelectedTech(null)
+                setViewFilter('all')
+                setSortOption('recent')
+              }}
+              className="mt-4 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white"
             >
-              Show all projects
+              Reset filters
             </button>
           </div>
         )}
+
+        <section className="mt-16">
+          <h2 className="mb-4 text-lg font-semibold text-zinc-800 dark:text-zinc-100">
+            Technologies I build with
+          </h2>
+          <div className="flex flex-wrap gap-2">
+            {techCounts.slice(0, 20).map(([tech, count]) => (
+              <span
+                key={tech}
+                className="rounded-full border border-zinc-200 px-3 py-1 text-xs font-medium text-zinc-700 dark:border-zinc-700 dark:text-zinc-300"
+              >
+                {tech}
+                <span className="ml-1 text-[0.65rem] text-zinc-400">×{count}</span>
+              </span>
+            ))}
+          </div>
+        </section>
       </SimpleLayout>
 
-      {/* Back to Top Button */}
       <button
         onClick={scrollToTop}
-        className={`fixed right-8 bottom-8 p-3 rounded-full bg-blue-600 text-white shadow-lg transition-opacity ${
-          showBackToTop ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        className={`fixed right-8 bottom-8 rounded-full bg-blue-600 p-3 text-white shadow-lg transition-opacity ${
+          showBackToTop ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
         aria-label="Back to top"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
         </svg>
       </button>
 
-            {/* Applify AI Banner */}
-            <div className="fixed bottom-4 right-4 z-50">
-        <Link 
-          href="/projects" 
-          className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-indigo-500 to-blue-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group"
+      <div className="fixed bottom-4 right-4 z-50">
+        <Link
+          href="/projects"
+          className="group flex items-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 to-blue-600 px-3 py-2 text-white shadow-lg transition"
         >
-          <div className="w-6 h-6 rounded-full overflow-hidden flex-shrink-0">
-            <Image 
-              src="/ApplifyLogo.svg" 
-              alt="Applify AI Logo" 
-              width={24} 
+          <div className="h-6 w-6 overflow-hidden rounded-full">
+            <Image
+              src="/ApplifyLogo.svg"
+              alt="Applify AI Logo"
+              width={24}
               height={24}
               className="object-cover"
             />
           </div>
-          <span className="text-xs font-medium pr-1">
-            Built using Applify AI — <span className="underline group-hover:no-underline">My Latest Project</span>
+          <span className="text-xs font-medium">
+            Built with Applify AI —{' '}
+            <span className="underline decoration-dotted group-hover:no-underline">
+              latest ship
+            </span>
           </span>
         </Link>
       </div>
     </>
+  )
+}
+
+export async function getStaticProps() {
+  try {
+    const projects = await getProjectsData()
+    return {
+      props: { projects },
+      revalidate: 60 * 60, // every hour
+    }
+  } catch (error) {
+    console.error('Failed to load projects page', error)
+    return {
+      props: { projects: [] },
+      revalidate: 60 * 15,
+    }
+  }
+}
+
+function MetricCard({ label, value, description }) {
+  return (
+    <div className="rounded-2xl border border-zinc-100 bg-white/60 p-5 shadow-sm backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/60">
+      <p className="text-xs font-semibold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
+        {label}
+      </p>
+      <p className="mt-2 text-3xl font-semibold text-zinc-900 dark:text-white">{value ?? '—'}</p>
+      <p className="text-sm text-zinc-500 dark:text-zinc-400">{description}</p>
+    </div>
+  )
+}
+
+function ProjectLogo({ logo, name }) {
+  if (!logo) {
+    return <span className="text-sm font-semibold text-blue-600">{getFallbackInitials(name)}</span>
+  }
+
+  if (typeof logo === 'string') {
+    return (
+      <Image
+        src={logo}
+        alt={name}
+        width={32}
+        height={32}
+        className="h-8 w-8 object-contain"
+        unoptimized
+      />
+    )
+  }
+
+  if (logo?.type === 'image' && logo.src) {
+    return (
+      <Image
+        src={logo.src}
+        alt={name}
+        width={32}
+        height={32}
+        className="h-8 w-8 object-contain"
+        unoptimized
+      />
+    )
+  }
+
+  if (logo?.type === 'icon' && logo.name) {
+    const IconComponent = PROJECT_ICONS[logo.name.toLowerCase()]
+
+    if (IconComponent) {
+      return <IconComponent className={clsx('h-7 w-7', logo.className)} />
+    }
+  }
+
+  if (logo?.src) {
+    return (
+      <Image
+        src={logo.src}
+        alt={name}
+        width={32}
+        height={32}
+        className="h-8 w-8 object-contain"
+        unoptimized
+      />
+    )
+  }
+
+  return <span className="text-sm font-semibold text-blue-600">{getFallbackInitials(name)}</span>
+}
+
+function getFallbackInitials(name = '') {
+  return name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word.charAt(0).toUpperCase())
+    .join('')
+    .padEnd(2, '•')
+}
+
+function sortProjects(projects, sortOption) {
+  const items = [...projects]
+
+  if (sortOption === 'alphabetical') {
+    return items.sort((a, b) => a.name.localeCompare(b.name))
+  }
+
+  if (sortOption === 'popular') {
+    return items.sort(
+      (a, b) => (b.stats?.stars ?? 0) - (a.stats?.stars ?? 0)
+    )
+  }
+
+  return items.sort((a, b) => {
+    const aTime = a.updatedAt ? new Date(a.updatedAt).getTime() : 0
+    const bTime = b.updatedAt ? new Date(b.updatedAt).getTime() : 0
+    return bTime - aTime
+  })
+}
+
+function formatNumber(value = 0) {
+  if (!value) return '0'
+  return new Intl.NumberFormat('en', {
+    notation: 'compact',
+    maximumFractionDigits: 1,
+  }).format(value)
+}
+
+function formatRelativeTime(dateString) {
+  if (!dateString) {
+    return 'Recently'
+  }
+
+  const date = new Date(dateString)
+  if (Number.isNaN(date.getTime())) {
+    return 'Recently'
+  }
+
+  const diffMs = date.getTime() - Date.now()
+  const minute = 60 * 1000
+  const hour = minute * 60
+  const day = hour * 24
+  const month = day * 30
+  const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' })
+
+  if (Math.abs(diffMs) < hour) {
+    return rtf.format(Math.round(diffMs / minute), 'minute')
+  }
+
+  if (Math.abs(diffMs) < day) {
+    return rtf.format(Math.round(diffMs / hour), 'hour')
+  }
+
+  if (Math.abs(diffMs) < month) {
+    return rtf.format(Math.round(diffMs / day), 'day')
+  }
+
+  return rtf.format(Math.round(diffMs / month), 'month')
+}
+
+function formatMonthYear(dateString) {
+  if (!dateString) {
+    return '—'
+  }
+
+  const date = new Date(dateString)
+  if (Number.isNaN(date.getTime())) {
+    return '—'
+  }
+
+  return new Intl.DateTimeFormat('en', {
+    month: 'short',
+    year: 'numeric',
+  }).format(date)
+}
+
+function LinkIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" {...props}>
+      <path
+        d="M18 13v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+        className="stroke-current"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M15 3h6v6"
+        className="stroke-current"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10 14 21 3"
+        className="stroke-current"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   )
 }
