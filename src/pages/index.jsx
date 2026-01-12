@@ -19,7 +19,7 @@ import image3 from '@/images/photos/image-5.png'
 import video from '@/images/photos/progress.mp4'
 
 import logoSKompXcel from '@/images/logos/SKompXcel.png'
-import logoMHCC from '@/images/logos/btc.png'
+import logoMHCC from '@/images/logos/mitsubishi.svg'
 import logoGiftCash from '@/images/logos/giftcash.jpeg'
 import logoSDI from '@/images/logos/sdi.jpeg'
 import logoDevProtocol from '@/images/logos/devprotocol.png'
@@ -201,9 +201,8 @@ function Resume() {
               <dt className="sr-only">Date</dt>
               <dd
                 className="ml-auto text-xs text-zinc-400 dark:text-zinc-500"
-                aria-label={`${role.start.label ?? role.start} until ${
-                  role.end.label ?? role.end
-                }`}
+                aria-label={`${role.start.label ?? role.start} until ${role.end.label ?? role.end
+                  }`}
               >
                 <time dateTime={role.start.dateTime ?? role.start}>
                   {role.start.label ?? role.start}
@@ -231,7 +230,7 @@ function Photos() {
   return (
     <div className="mt-16 sm:mt-20">
       <div className="-my-4 flex justify-center gap-5 overflow-hidden py-4 sm:gap-8 flex-wrap">
-        {[image1, image2, video ,image3, image5].map((media, mediaIndex) => {
+        {[image1, image2, video, image3, image5].map((media, mediaIndex) => {
           const isVideo = typeof media === 'string' && media.endsWith('.mp4');
           const isSvg = typeof media === 'string' && media.endsWith('.svg');
           const src = typeof media === 'object' ? media.src : media;
@@ -245,12 +244,12 @@ function Photos() {
               )}
             >
               {isVideo ? (
-                <video 
+                <video
                   autoPlay
                   loop
                   muted
-                  playsInline 
-                  controls 
+                  playsInline
+                  controls
                   className="absolute inset-0 h-full w-full object-cover"
                 >
                   <source src={src} type="video/mp4" />
@@ -310,11 +309,11 @@ export default function Home({ articles }) {
               Progress rewards curiosity and deliberate practice.
             </h1>
           </div>
-          
+
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            I&apos;m <strong>Suleyman Kiani</strong>—building systems that turn ideas into reality. 
-            Currently balancing equipment finance at <strong>Mitsubishi HC Capital Canada</strong> with an 
-            <strong> MEng in Computing and Software</strong> (Dec 2026), while exploring the intersection 
+            I&apos;m <strong>Suleyman Kiani</strong>—building systems that turn ideas into reality.
+            Currently balancing equipment finance at <strong>Mitsubishi HC Capital Canada</strong> with an
+            <strong> MEng in Computing and Software</strong>, while exploring the intersection
             of financial markets and machine learning.
           </p>
 
@@ -325,7 +324,7 @@ export default function Home({ articles }) {
               <div className="text-xs text-teal-600 dark:text-teal-500 mt-1">Applify AI Users</div>
             </div>
             <div className="p-4 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border border-blue-200 dark:border-blue-700/50">
-              <div className="text-2xl font-bold text-blue-700 dark:text-blue-400">$10M+</div>
+              <div className="text-2xl font-bold text-blue-700 dark:text-blue-400">$15M+</div>
               <div className="text-xs text-blue-600 dark:text-blue-500 mt-1">Deals Financed</div>
             </div>
             <div className="p-4 rounded-lg bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border border-purple-200 dark:border-purple-700/50">
@@ -349,8 +348,8 @@ export default function Home({ articles }) {
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Equipment Finance</h3>
                   <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
-                    Structure multi-million dollar construction & transportation deals. Build financial spreads, 
-                    calculate EBITDA from statements, conduct 4-blocker credit evaluations, and model amortization 
+                    Structure multi-million dollar construction & transportation deals. Build financial spreads,
+                    calculate EBITDA from statements, conduct 4-blocker credit evaluations, and model amortization
                     schedules in Excel & Power BI.
                   </p>
                 </div>
@@ -363,8 +362,8 @@ export default function Home({ articles }) {
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Software Engineering</h3>
                   <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
-                    Built <strong>Applify AI</strong> (150+ paying users)—an ATS-optimized résumé platform. Founded 
-                    <strong> SKompXcel</strong>, mentoring 80+ students through algorithms, system design, and mock interviews. 
+                    Built <strong>Applify AI</strong> (150+ paying users)—an ATS-optimized résumé platform. Founded
+                    <strong> SKompXcel</strong>, mentoring 80+ students through algorithms, system design, and mock interviews.
                     TypeScript, Next.js, Python, AWS, GCP.
                   </p>
                 </div>
@@ -377,14 +376,14 @@ export default function Home({ articles }) {
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Research & Learning</h3>
                   <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
-                    Pursuing MEng in Computing & Software while diving into ML and financial markets—building 
+                    Pursuing MEng in Computing & Software while diving into ML and financial markets—building
                     systems that bridge data and decision-making.
                   </p>
                 </div>
               </div>
             </div>
           </div>
-          
+
           {/* Tech Stack */}
           <div className="mt-8">
             <h2 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100 mb-4">Tech Stack</h2>
@@ -400,10 +399,10 @@ export default function Home({ articles }) {
           {/* CTA */}
           <div className="mt-8 p-6 rounded-xl bg-gradient-to-br from-teal-50 to-blue-50 dark:from-teal-900/10 dark:to-blue-900/10 border border-teal-200 dark:border-teal-800/50">
             <p className="text-sm text-zinc-700 dark:text-zinc-300">
-              <strong>Let&apos;s Connect</strong> — Exploring cloud architecture, ML in finance, or just enjoy a good chess endgame? 
+              <strong>Let&apos;s Connect</strong> — Exploring cloud architecture, ML in finance, or just enjoy a good chess endgame?
               My inbox is open.
             </p>
-            
+
             {/* Social Links */}
             <div className="mt-4 flex gap-4">
               <SocialLink
@@ -422,7 +421,7 @@ export default function Home({ articles }) {
                 icon={LinkedInIcon}
               />
               <SocialLink
-                href="mailto:suley.kiani@outlook.com" 
+                href="mailto:suley.kiani@outlook.com"
                 aria-label="Email me"
                 icon={({ ...props }) => (
                   <Mail {...props} className="h-6 w-6 fill-zinc-500 transition group-hover:fill-zinc-600 dark:fill-zinc-400 dark:group-hover:fill-zinc-300" />
@@ -432,8 +431,8 @@ export default function Home({ articles }) {
           </div>
         </div>
       </Container>
-            {/* Site Description */}
-            <Container className="mt-16">
+      {/* Site Description */}
+      <Container className="mt-16">
         <div className="max-w-2xl">
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-zinc-800 dark:text-zinc-100 mb-2">
@@ -442,27 +441,27 @@ export default function Home({ articles }) {
               </span>
             </h2>
             <p className="text-base text-zinc-600 dark:text-zinc-400">
-              My working logbook—code, experiments, and lessons from building Applify AI, SKompXcel, 
+              My working logbook—code, experiments, and lessons from building Applify AI, SKompXcel,
               and a stack of open‑source tools.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/50">
               <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm mb-1">Projects</h3>
               <p className="text-xs text-zinc-600 dark:text-zinc-400">Live demos, architecture notes & post‑mortems</p>
             </div>
-            
+
             <div className="p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/50">
               <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm mb-1">Articles</h3>
               <p className="text-xs text-zinc-600 dark:text-zinc-400">Cloud patterns, DevOps automation & problem‑solving</p>
             </div>
-            
+
             <div className="p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/50">
               <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm mb-1">Resume & Uses</h3>
               <p className="text-xs text-zinc-600 dark:text-zinc-400">Skills, stack & gear that keeps the wheels turning</p>
             </div>
-            
+
             <div className="p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/50">
               <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm mb-1">Dashboards</h3>
               <p className="text-xs text-zinc-600 dark:text-zinc-400">LeetCode, Spotify & other data‑driven snapshots</p>
@@ -476,7 +475,7 @@ export default function Home({ articles }) {
             <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-white blur-3xl"></div>
             <div className="absolute bottom-10 -left-20 w-60 h-60 rounded-full bg-white blur-3xl"></div>
           </div>
-          
+
           <div className="container mx-auto px-4 md:px-6 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="text-white space-y-6 order-2 lg:order-1">
@@ -490,13 +489,13 @@ export default function Home({ articles }) {
                   Applify AI — Your Personal <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-yellow-100">Résumé-Tailoring</span> Engine
                 </h2>
                 <p className="text-lg md:text-xl text-white/90 leading-relaxed max-w-xl">
-                  Paste any job description, get an ATS-optimized résumé tailored to your achievements. 
+                  Paste any job description, get an ATS-optimized résumé tailored to your achievements.
                   Download a perfect one-page PDF in minutes. <strong>150+ paying users</strong> and counting.
                 </p>
-                
+
                 <div className="flex flex-wrap gap-5 pt-4">
-                  <a 
-                    href="https://www.applify-ai.com/" 
+                  <a
+                    href="https://www.applify-ai.com/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl bg-white hover:bg-gray-100 text-blue-700 font-medium transition-colors shadow-lg"
@@ -504,14 +503,14 @@ export default function Home({ articles }) {
                     Experience Applify AI
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </a>
-                  <Link 
+                  <Link
                     href="/projects"
                     className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-medium transition-colors border border-white/20"
                   >
                     Learn More
                   </Link>
                 </div>
-                
+
                 <div className="flex flex-wrap gap-6 mt-8 pt-6 border-t border-white/20">
                   <div className="flex items-center">
                     <Zap className="h-5 w-5 mr-2 text-yellow-300" />
@@ -527,7 +526,7 @@ export default function Home({ articles }) {
                   </div>
                 </div>
               </div>
-              
+
               <div className="order-1 lg:order-2 relative">
                 <div className="absolute inset-0 bg-gradient-to-tr from-blue-400/20 to-purple-500/20 rounded-3xl blur-3xl"></div>
                 <div className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm p-4 md:p-6 rounded-2xl border border-white/20 shadow-2xl transform hover:-rotate-1 transition-transform duration-500">
@@ -539,9 +538,9 @@ export default function Home({ articles }) {
                       height={400}
                       className="w-full h-auto object-cover rounded-xl"
                     />
-                    
+
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                    
+
                     <div className="absolute top-4 right-4 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-lg rounded-full p-2 animate-float">
                       <div className="flex items-center">
                         <Star className="h-4 w-4 text-yellow-400" fill="#FBBF24" />
@@ -556,10 +555,10 @@ export default function Home({ articles }) {
                       <h3 className="font-bold">Resume Tailoring Made Simple</h3>
                       <p className="text-sm">Powered by SKompXcel AI</p>
                     </div>
-                    
+
                     <div className="absolute -bottom-5 right-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full p-1 shadow-lg transform rotate-6 animate-pulse">
-                      <a 
-                        href="https://www.applify-ai.com/" 
+                      <a
+                        href="https://www.applify-ai.com/"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="bg-white dark:bg-gray-800 rounded-full p-1.5 block"
