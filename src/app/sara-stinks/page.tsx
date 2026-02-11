@@ -881,7 +881,7 @@ function MessageSection() {
                 )}
               </span>{' '}
               of this family. Mama and Baba raised us to protect our only sister like it's a job title, and honestly… fair. You have this way of calming everyone
-              down when things get heated, like you're the family's option.
+              down when things get heated, like you're the family's fire extinguisher.
             </p>
 
             <p>
