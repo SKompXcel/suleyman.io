@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import {
   Lock, ChevronLeft, ChevronRight, Play, Pause, Sparkles,
-  Heart, Star, Gift, Cake, PartyPopper, Crown, Zap
+  Heart, Star, Gift, Cake, PartyPopper, Crown, Zap, Music, Volume2, VolumeX
 } from 'lucide-react'
 
 // Image paths
@@ -31,8 +31,112 @@ const SARA_FACTS = [
   "Plot twist: She's actually the smart one in the family 🧠",
 ]
 
+// Background music controller 🎵
+let backgroundAudio: HTMLAudioElement | null = null
+let isMusicPlaying = false
+
+// Play your chosen background music! 🎀✨
+const startBackgroundMusic = () => {
+  if (isMusicPlaying && backgroundAudio) return
+
+  try {
+    // Create audio element with your song
+    backgroundAudio = new Audio('/SaraBDAY/Naruto_Soundtrack-_Sadness_and_Sorrow_(FULL_VERSION)_128k.mp3')
+    backgroundAudio.loop = true // Loop continuously
+    backgroundAudio.volume = 0.15 // Quiet background volume (15%)
+
+    // Fade in the music
+    backgroundAudio.volume = 0
+    backgroundAudio.play()
+
+    // Smooth fade in over 2 seconds
+    let volume = 0
+    const fadeIn = setInterval(() => {
+      if (volume < 0.15) {
+        volume += 0.01
+        if (backgroundAudio) backgroundAudio.volume = volume
+      } else {
+        clearInterval(fadeIn)
+      }
+    }, 100)
+
+    isMusicPlaying = true
+  } catch (e) {
+    console.log('Background music file not found. Add your song to public/SaraBDAY/background-music.mp3')
+  }
+}
+
+const stopBackgroundMusic = () => {
+  isMusicPlaying = false
+  if (backgroundAudio) {
+    // Smooth fade out
+    let volume = backgroundAudio.volume
+    const fadeOut = setInterval(() => {
+      if (volume > 0) {
+        volume -= 0.02
+        if (backgroundAudio) backgroundAudio.volume = Math.max(0, volume)
+      } else {
+        clearInterval(fadeOut)
+        if (backgroundAudio) {
+          backgroundAudio.pause()
+          backgroundAudio.currentTime = 0
+        }
+      }
+    }, 50)
+  }
+}
+
+// Magical sound effects! 🎵✨
+const playTwinkle = (type: 'unlock' | 'sparkle' | 'like' | 'secret' = 'sparkle') => {
+  try {
+    const AudioContext = window.AudioContext || (window as any).webkitAudioContext
+    const audioContext = new AudioContext()
+
+    const playNote = (frequency: number, startTime: number, duration: number = 0.15) => {
+      const oscillator = audioContext.createOscillator()
+      const gainNode = audioContext.createGain()
+
+      oscillator.connect(gainNode)
+      gainNode.connect(audioContext.destination)
+
+      oscillator.frequency.value = frequency
+      oscillator.type = 'sine'
+
+      gainNode.gain.setValueAtTime(0.1, startTime)
+      gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration)
+
+      oscillator.start(startTime)
+      oscillator.stop(startTime + duration)
+    }
+
+    const now = audioContext.currentTime
+
+    if (type === 'unlock') {
+      // Magical ascending arpeggio for unlock 🎶
+      const notes = [523.25, 659.25, 783.99, 1046.50] // C5, E5, G5, C6
+      notes.forEach((freq, i) => playNote(freq, now + i * 0.1, 0.3))
+    } else if (type === 'sparkle') {
+      // Quick twinkle for sparkle clicks ✨
+      playNote(1046.50, now, 0.1) // C6
+      playNote(1318.51, now + 0.05, 0.1) // E6
+    } else if (type === 'like') {
+      // Heart twinkle for likes 💖
+      playNote(783.99, now, 0.15) // G5
+      playNote(987.77, now + 0.08, 0.15) // B5
+    } else if (type === 'secret') {
+      // Special achievement sound 🎉
+      const notes = [659.25, 783.99, 1046.50, 783.99, 1046.50]
+      notes.forEach((freq, i) => playNote(freq, now + i * 0.08, 0.2))
+    }
+  } catch (e) {
+    // Silently fail if audio context not supported
+    console.log('Audio not supported')
+  }
+}
+
 export default function SaraBirthdayPage() {
   const [isUnlocked, setIsUnlocked] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [password, setPassword] = useState('')
   const [showError, setShowError] = useState(false)
   const [showSparkles, setShowSparkles] = useState(false)
@@ -41,18 +145,30 @@ export default function SaraBirthdayPage() {
   const [currentFact, setCurrentFact] = useState('')
   const [showFact, setShowFact] = useState(false)
   const [retardCounter, setRetardCounter] = useState(0)
+  const [isMusicMuted, setIsMusicMuted] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (password.toLowerCase() === 'suleyman') {
+      playTwinkle('unlock') // 🎵 Magical unlock sound!
       setShowSparkles(true)
-      setTimeout(() => setIsUnlocked(true), 800)
-      // Show random fact after unlock
+
+      // Show loading screen after sparkles
       setTimeout(() => {
-        setCurrentFact(SARA_FACTS[Math.floor(Math.random() * SARA_FACTS.length)])
-        setShowFact(true)
-        setTimeout(() => setShowFact(false), 5000)
-      }, 2000)
+        setIsLoading(true)
+        startBackgroundMusic() // 🎀 Start music during loading!
+      }, 800)
+
+      // Show main content after music starts (3 seconds of suspense)
+      setTimeout(() => {
+        setIsUnlocked(true)
+        // Show random fact after unlock
+        setTimeout(() => {
+          setCurrentFact(SARA_FACTS[Math.floor(Math.random() * SARA_FACTS.length)])
+          setShowFact(true)
+          setTimeout(() => setShowFact(false), 5000)
+        }, 1000)
+      }, 3800) // 800ms sparkles + 3000ms loading
     } else {
       setRetardCounter(prev => prev + 1)
       setShowError(true)
@@ -62,10 +178,23 @@ export default function SaraBirthdayPage() {
 
   // Easter egg: Click counter
   const handleLogoClick = () => {
+    playTwinkle('sparkle') // ✨ Sparkle sound on each click!
     setClickCount(prev => prev + 1)
     if (clickCount + 1 === 19) {
+      playTwinkle('secret') // 🎉 Special achievement sound!
       setShowSecretMessage(true)
       setTimeout(() => setShowSecretMessage(false), 4000)
+    }
+  }
+
+  // Toggle background music
+  const toggleMusic = () => {
+    if (isMusicMuted) {
+      startBackgroundMusic()
+      setIsMusicMuted(false)
+    } else {
+      stopBackgroundMusic()
+      setIsMusicMuted(true)
     }
   }
 
@@ -150,7 +279,7 @@ export default function SaraBirthdayPage() {
         </AnimatePresence>
 
         <AnimatePresence mode="wait">
-          {!isUnlocked ? (
+          {!isUnlocked && !isLoading ? (
             <PasswordLock
               key="lock"
               password={password}
@@ -160,8 +289,45 @@ export default function SaraBirthdayPage() {
               showSparkles={showSparkles}
               retardCounter={retardCounter}
             />
+          ) : isLoading && !isUnlocked ? (
+            <LoadingScreen key="loading" />
           ) : (
-            <BirthdayContent key="content" onLogoClick={handleLogoClick} clickCount={clickCount} />
+            <>
+              <BirthdayContent key="content" onLogoClick={handleLogoClick} clickCount={clickCount} />
+              {/* Floating music toggle button */}
+              <motion.button
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 1, type: 'spring' }}
+                onClick={toggleMusic}
+                className="fixed bottom-8 right-8 z-50 p-4 rounded-full bg-gradient-to-br from-pink-400 to-purple-500
+                         text-white shadow-2xl hover:shadow-pink-300/50 hover:scale-110 transition-all duration-300
+                         border-2 border-white/50"
+                title={isMusicMuted ? "Play music 🎵" : "Pause music 🎵"}
+              >
+                <AnimatePresence mode="wait">
+                  {isMusicMuted ? (
+                    <motion.div
+                      key="muted"
+                      initial={{ scale: 0, rotate: -180 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      exit={{ scale: 0, rotate: 180 }}
+                    >
+                      <VolumeX className="w-6 h-6" />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="playing"
+                      initial={{ scale: 0, rotate: -180 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      exit={{ scale: 0, rotate: 180 }}
+                    >
+                      <Music className="w-6 h-6" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.button>
+            </>
           )}
         </AnimatePresence>
       </div>
@@ -199,6 +365,80 @@ function FloatingDecorations() {
         )
       })}
     </div>
+  )
+}
+
+function LoadingScreen() {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center"
+    >
+      {/* Elegant loading animation */}
+      <div className="text-center space-y-8">
+        {/* Animated sparkles */}
+        <motion.div
+          animate={{
+            rotate: 360,
+            scale: [1, 1.2, 1]
+          }}
+          transition={{
+            rotate: { duration: 3, repeat: Infinity, ease: 'linear' },
+            scale: { duration: 2, repeat: Infinity, ease: 'easeInOut' }
+          }}
+          className="flex justify-center"
+        >
+          <Sparkles className="w-16 h-16 text-yellow-500" fill="#EAB308" />
+        </motion.div>
+
+        {/* Loading text */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="space-y-4"
+        >
+          <h2
+            className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-yellow-500 bg-clip-text text-transparent"
+            style={{ fontFamily: "'Playfair Display', serif" }}
+          >
+            Preparing something special...
+          </h2>
+
+          {/* Animated dots */}
+          <div className="flex justify-center gap-2">
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={i}
+                animate={{
+                  scale: [1, 1.5, 1],
+                  opacity: [0.3, 1, 0.3]
+                }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  delay: i * 0.2
+                }}
+                className="w-2 h-2 rounded-full bg-gradient-to-r from-pink-400 to-purple-500"
+              />
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Gentle hint */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+          className="text-sm text-gray-500 italic"
+          style={{ fontFamily: "'DM Sans', sans-serif" }}
+        >
+          Loading your birthday surprise... 🎀
+        </motion.p>
+      </div>
+    </motion.div>
   )
 }
 
@@ -738,6 +978,7 @@ function PhotoCarousel() {
   }
 
   const handleLike = () => {
+    playTwinkle('like') // 💖 Heart twinkle sound!
     setLikeCount(prev => prev + 1)
     setShowLikeHeart(true)
     setTimeout(() => setShowLikeHeart(false), 1000)
