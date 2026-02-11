@@ -380,7 +380,7 @@ function PasswordLock({ password, setPassword, handleSubmit, showError, showSpar
                   className="text-sm text-gray-600 italic"
                   style={{ fontFamily: "'DM Sans', sans-serif" }}
                 >
-                  (hint: it's not Suleyman... jk it <span className="font-bold">definitely</span> is 😉)
+                  (hint: the bestest one <span className="font-bold">definitely</span> is 😉)
                 </p>
               </motion.div>
             )}
