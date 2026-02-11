@@ -159,7 +159,7 @@ export default function SaraBirthdayPage() {
         startBackgroundMusic() // 🎀 Start music during loading!
       }, 800)
 
-      // Show main content after music starts (3 seconds of suspense)
+      // Show main content after music starts (6 seconds of suspense)
       setTimeout(() => {
         setIsUnlocked(true)
         // Show random fact after unlock
@@ -168,7 +168,7 @@ export default function SaraBirthdayPage() {
           setShowFact(true)
           setTimeout(() => setShowFact(false), 5000)
         }, 1000)
-      }, 3800) // 800ms sparkles + 3000ms loading
+      }, 6800) // 800ms sparkles + 6000ms loading
     } else {
       setRetardCounter(prev => prev + 1)
       setShowError(true)
@@ -404,7 +404,7 @@ function LoadingScreen() {
             className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-yellow-500 bg-clip-text text-transparent"
             style={{ fontFamily: "'Playfair Display', serif" }}
           >
-            Preparing something special...
+            Turn up your volume...
           </h2>
 
           {/* Animated dots */}
@@ -427,15 +427,26 @@ function LoadingScreen() {
           </div>
         </motion.div>
 
-        {/* Gentle hint */}
+        {/* Warning message */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
-          className="text-sm text-gray-500 italic"
+          className="text-base md:text-lg font-semibold text-gray-700"
           style={{ fontFamily: "'DM Sans', sans-serif" }}
         >
-          Loading your birthday surprise... 🎀
+          Shit's about to get serious... 😤
+        </motion.p>
+
+        {/* Sweet message */}
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 2.5 }}
+          className="text-lg md:text-xl font-semibold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent pt-4"
+          style={{ fontFamily: "'Crimson Text', serif" }}
+        >
+          With Lots of Love for the greatest sister in the world 💕
         </motion.p>
       </div>
     </motion.div>
