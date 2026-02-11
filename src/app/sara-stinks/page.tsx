@@ -19,6 +19,19 @@ const IMAGES = [
   '/SaraBDAY/7.jpg',
   '/SaraBDAY/8.jpg',
   '/SaraBDAY/9.JPG',
+  '/SaraBDAY/10.jpg',
+  '/SaraBDAY/11.jpg',
+  '/SaraBDAY/12.jpg',
+  '/SaraBDAY/13.jpg',
+  '/SaraBDAY/14.jpg',
+  '/SaraBDAY/15.jpg',
+  '/SaraBDAY/16.jpg',
+  '/SaraBDAY/17.jpg',
+  '/SaraBDAY/18.jpg',
+  '/SaraBDAY/19.jpg',
+  '/SaraBDAY/20.jpg',
+  '/SaraBDAY/21.jpg',
+  '/SaraBDAY/22.jpg',
 ]
 
 // Fun facts easter eggs
@@ -995,7 +1008,7 @@ function PhotoCarousel() {
     setTimeout(() => setShowLikeHeart(false), 1000)
   }
 
-  const rotations = [2, -2, 2, -2, 2, -2, 2, -2, 2]
+  const rotations = [2, -2, 2, -2, 2, -2, 2, -2, 2, -2, 2, -2, 2, -2, 2, -2, 2, -2, 2, -2, 2, -2]
 
   return (
     <motion.div
