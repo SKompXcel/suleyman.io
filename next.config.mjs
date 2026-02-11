@@ -4,19 +4,16 @@ import rehypePrism from '@mapbox/rehype-prism';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  pageExtensions: ['js', 'jsx', 'mdx'],
+  pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
   reactStrictMode: true,
-  experimental: {
-    scrollRestoration: true,
-  },
   images: {
-    domains: [
-      'i.scdn.co',
-      'www.motortrend.com',
-      'hips.hearstapps.com',
-      'dealerinspire-image-library-prod.s3.us-east-1.amazonaws.com',
-      'scontent-yyz1-1.cdninstagram.com'
-    ], // Allow Spotify images
+    remotePatterns: [
+      { protocol: 'https', hostname: 'i.scdn.co' },
+      { protocol: 'https', hostname: 'www.motortrend.com' },
+      { protocol: 'https', hostname: 'hips.hearstapps.com' },
+      { protocol: 'https', hostname: 'dealerinspire-image-library-prod.s3.us-east-1.amazonaws.com' },
+      { protocol: 'https', hostname: 'scontent-yyz1-1.cdninstagram.com' },
+    ],
   },
   webpack(config) {
     config.module.rules.push({
@@ -25,11 +22,13 @@ const nextConfig = {
         loader: 'file-loader',
         options: {
           name: '[name].[hash].[ext]',
-          outputPath: 'static/videos/', // Video files will be output here
-          publicPath: '/_next/static/videos/', // Public URL for accessing videos
+          outputPath: 'static/videos/',
+          publicPath: '/_next/static/videos/',
         },
       },
     });
+
+    config.resolve.alias.canvas = false;
 
     return config;
   },
