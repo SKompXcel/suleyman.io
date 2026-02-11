@@ -32,8 +32,8 @@ const IMAGES = [
   '/SaraBDAY/20.jpg',
   '/SaraBDAY/21.jpg',
   '/SaraBDAY/22.jpg',
-  '/SaraBDAY/23.jpg',
-  '/SaraBDAY/24.jpg',
+  '/SaraBDAY/23.jpeg',
+  '/SaraBDAY/24.jpeg',
 ]
 
 // Fun facts easter eggs
